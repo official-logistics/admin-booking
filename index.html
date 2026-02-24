@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0F172A">
+    <title>ระบบจองรอบรับสินค้า | K2PS Innovation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy: #0F172A; --navy-2: #1E293B; --navy-3: #334155;
+            --slate: #475569; --slate-light: #64748B;
+            --border: #E2E8F0; --bg: #F8FAFC; --white: #FFFFFF;
+            --green: #16A34A; --green-bg: #DCFCE7; --green-border: #86EFAC;
+            --amber: #D97706; --amber-bg: #FEF3C7; --amber-border: #FCD34D;
+            --blue: #2563EB; --blue-bg: #EFF6FF; --blue-border: #93C5FD;
+            --gray-bg: #F1F5F9; --gray-border: #CBD5E1;
+        }
+
+        html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Sarabun', -apple-system, sans-serif;
+            background: var(--bg); min-height: 100vh; color: var(--navy);
+            line-height: 1.6; -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent; font-size: 16px;
+        }
+
+        .page-main { display: block; padding-bottom: 84px; }
+        .page-main.hidden { display: none; }
+        .page-success { display: none; min-height: 100vh; background: var(--bg); }
+        .page-success.show { display: block; }
+
+        /* HEADER */
+        .header { background: var(--navy); padding: 20px 16px 18px; border-bottom: 2px solid var(--navy-3); }
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .brand-tag { font-size: 11px; font-weight: 700; color: #94A3B8; letter-spacing: 1.5px; text-transform: uppercase; }
+        .escrow-badge {
+            display: inline-flex; align-items: center; gap: 5px; background: #064E3B;
+            border: 1px solid #065F46; border-radius: 4px; padding: 3px 8px;
+            font-size: 10px; font-weight: 700; color: #6EE7B7; letter-spacing: 0.5px;
+        }
+        .escrow-badge::before { content: ''; width: 6px; height: 6px; background: #34D399; border-radius: 50%; }
+        .header h1 { font-size: 20px; font-weight: 800; color: var(--white); line-height: 1.3; margin-bottom: 4px; }
+        .header .subtitle { font-size: 13px; color: #94A3B8; font-weight: 400; }
+
+        /* NOTICE */
+        .notice-bar { background: #1E3A5F; border-bottom: 1px solid #1D4ED8; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+        .notice-text { font-size: 12px; color: #BAE6FD; line-height: 1.5; font-weight: 500; }
+
+        /* MONTH NAV */
+        .month-nav {
+            background: var(--white); border-bottom: 1px solid var(--border);
+            padding: 12px 16px; display: flex; align-items: center;
+            justify-content: space-between; gap: 12px;
+            position: sticky; top: 0; z-index: 50;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .month-arrow {
+            width: 44px; height: 44px; background: var(--bg);
+            border: 1.5px solid var(--border); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 20px; color: var(--navy-2); font-weight: 700;
+            -webkit-tap-highlight-color: transparent; flex-shrink: 0; transition: all 0.15s;
+            user-select: none;
+        }
+        .month-arrow:active { background: var(--border); transform: scale(0.95); }
+        .month-arrow.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
+        .month-center { flex: 1; text-align: center; }
+        .month-label { font-size: 17px; font-weight: 800; color: var(--navy); display: block; line-height: 1.2; }
+        .month-sublabel { font-size: 11px; color: var(--slate-light); font-weight: 500; margin-top: 2px; display: block; }
+        .month-dots { display: flex; justify-content: center; gap: 6px; margin-top: 7px; }
+        .month-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: background 0.2s, transform 0.2s; }
+        .month-dot.active { background: var(--blue); transform: scale(1.2); }
+
+        /* LEGEND */
+        .legend-inline { padding: 8px 16px 12px; display: flex; gap: 14px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--slate); font-weight: 600; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 2px; border: 1px solid; flex-shrink: 0; }
+        .legend-dot.available { background: var(--green-bg); border-color: var(--green-border); }
+        .legend-dot.limited   { background: var(--amber-bg); border-color: var(--amber-border); }
+        .legend-dot.full      { background: var(--gray-bg);  border-color: var(--gray-border); }
+
+        /* PANELS */
+        .month-panel { display: none; }
+        .month-panel.active { display: block; }
+
+        /* DATE CARDS */
+        .date-list { padding: 0 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+        .date-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+        .date-card.has-available { border-color: var(--green-border); box-shadow: 0 0 0 1px var(--green-border); }
+        .date-card-header {
+            padding: 12px 14px; display: flex; align-items: center;
+            justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--bg);
+        }
+        .date-card.has-available .date-card-header { background: #F0FDF4; border-bottom-color: var(--green-border); }
+        .date-info { display: flex; align-items: center; gap: 10px; }
+        .date-num { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1; }
+        .date-detail { display: flex; flex-direction: column; }
+        .date-weekday { font-size: 12px; color: var(--slate-light); font-weight: 500; }
+        .date-month-name { font-size: 13px; font-weight: 600; color: var(--navy-2); }
+        .avail-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .avail-badge.has-open    { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+        .avail-badge.limited-only{ background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+        .avail-badge.all-full    { background: var(--gray-bg);  color: #64748B;      border: 1px solid var(--gray-border); }
+        .avail-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+        /* SLOTS */
+        .slot-grid { padding: 10px 14px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .slot-btn {
+            min-height: 64px; padding: 10px 8px; border-radius: 8px; border: 1.5px solid transparent;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+            cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent;
+            font-family: 'Sarabun', sans-serif; text-align: center; user-select: none;
+        }
+        .slot-btn .slot-period { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.8; }
+        .slot-btn .slot-time   { font-size: 12px; font-weight: 700; line-height: 1.2; }
+        .slot-btn .slot-tag    { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-top: 2px; }
+
+        .slot-btn.available { background: var(--green-bg); border-color: var(--green-border); color: #14532D; }
+        .slot-btn.available .slot-tag { background: #BBF7D0; color: #15803D; }
+        .slot-btn.available:active { background: #BBF7D0; border-color: #22C55E; transform: scale(0.97); }
+
+        .slot-btn.limited { background: var(--amber-bg); border-color: var(--amber-border); color: #78350F; }
+        .slot-btn.limited .slot-tag { background: #FDE68A; color: #92400E; }
+        .slot-btn.limited:active { background: #FDE68A; border-color: #EAB308; transform: scale(0.97); }
+
+        .slot-btn.full { background: var(--gray-bg); border-color: var(--gray-border); color: #94A3B8; cursor: not-allowed; }
+        .slot-btn.full .slot-tag { background: var(--border); color: #94A3B8; }
+
+        .slot-btn.selected {
+            border-color: var(--blue) !important; background: var(--blue-bg) !important;
+            color: #1D4ED8 !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.2) !important;
+        }
+        .slot-btn.selected .slot-tag { background: #BFDBFE !important; color: #1D4ED8 !important; }
+
+        /* STICKY */
+        .sticky-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+            border-top: 1px solid var(--border); padding: 12px 16px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 100; box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        }
+        .sticky-bar-inner { max-width: 600px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+        .sticky-selection { flex: 1; min-width: 0; }
+        .sticky-selection-label { font-size: 10px; color: var(--slate-light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sticky-selection-value { font-size: 13px; font-weight: 700; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sticky-selection-value.empty { color: var(--slate-light); font-weight: 400; font-size: 12px; }
+        .sticky-cta {
+            padding: 13px 20px; background: var(--blue); border: none; border-radius: 8px;
+            color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700;
+            cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; flex-shrink: 0;
+        }
+        .sticky-cta:disabled { background: var(--slate-light); cursor: not-allowed; opacity: 0.6; }
+        .sticky-cta:active:not(:disabled) { background: #1D4ED8; }
+
+        /* PAYMENT */
+        .payment-section { margin: 0 12px 16px; background: var(--amber-bg); border: 1.5px solid var(--amber-border); border-radius: 10px; padding: 14px; }
+        .payment-section h3 { font-size: 13px; font-weight: 700; color: #78350F; margin-bottom: 6px; }
+        .payment-section p  { font-size: 12px; color: #92400E; line-height: 1.6; }
+
+        /* FOOTER */
+        .footer { background: var(--navy); padding: 16px; text-align: center; }
+        .footer .brand   { font-size: 13px; font-weight: 700; color: #CBD5E1; letter-spacing: 1px; }
+        .footer .tagline { font-size: 11px; color: #64748B; margin-top: 4px; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200; align-items: flex-end; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-sheet {
+            background: var(--white); border-radius: 16px 16px 0 0; width: 100%;
+            max-width: 600px; max-height: 96vh; overflow-y: auto;
+            -webkit-overflow-scrolling: touch; padding-bottom: env(safe-area-inset-bottom);
+        }
+        @media (min-width: 640px) {
+            .modal { align-items: center; padding: 16px; }
+            .modal-sheet { border-radius: 12px; max-height: 92vh; }
+            .sheet-handle { display: none; }
+        }
+        .sheet-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 10px auto; }
+        .modal-header { background: var(--navy); padding: 14px 16px 16px; }
+        .modal-header h2 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+        .booking-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        .booking-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--navy-3); border: 1px solid #475569; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; color: var(--white); }
+        .booking-chip span { opacity: 0.7; font-weight: 400; }
+        .modal-body { padding: 16px; }
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+        .form-label .req { color: #DC2626; margin-left: 2px; }
+        .form-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 16px; color: var(--navy); background: var(--white); -webkit-appearance: none; transition: border-color 0.15s, box-shadow 0.15s; }
+        .form-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+        .form-input::placeholder { color: #94A3B8; }
+        .form-input.valid { border-color: var(--green); }
+        .form-input.error { border-color: #DC2626; }
+        .form-hint.error-msg { font-size: 11px; color: #DC2626; margin-top: 4px; display: none; }
+        .form-hint.error-msg.show { display: block; }
+        .privacy-bar { background: #F0FDF4; border: 1px solid var(--green-border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #166534; line-height: 1.5; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 8px; }
+        .privacy-bar .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+        .submit-btn { width: 100%; padding: 14px; background: var(--blue); border: none; border-radius: 8px; color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; }
+        .submit-btn:active:not(:disabled) { background: #1D4ED8; }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .cancel-link { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: var(--slate-light); cursor: pointer; padding: 6px; }
+
+        /* SUCCESS */
+        .success-page { max-width: 600px; margin: 0 auto; padding: 24px 16px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+        .success-header { text-align: center; margin-bottom: 24px; }
+        .success-check { width: 72px; height: 72px; background: var(--green-bg); border: 3px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; color: var(--green); }
+        .success-title { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+        .success-sub   { font-size: 13px; color: var(--slate-light); }
+        .ref-hero { background: var(--navy); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 16px; }
+        .ref-label  { font-size: 11px; font-weight: 700; color: #64748B; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+        .ref-number { font-family: 'Courier New', monospace; font-size: 26px; font-weight: 900; color: #60A5FA; letter-spacing: 2px; word-break: break-all; line-height: 1.3; }
+        .ref-hint   { font-size: 11px; color: #475569; margin-top: 8px; }
+        .next-step-card { background: #EFF6FF; border: 2px solid #BFDBFE; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .next-step-title { font-size: 13px; font-weight: 700; color: #1D4ED8; margin-bottom: 4px; }
+        .next-step-desc  { font-size: 12px; color: #3B82F6; line-height: 1.5; margin-bottom: 14px; }
+        .copy-btn { width: 100%; padding: 13px; background: var(--blue); border: none; border-radius: 8px; color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; margin-bottom: 8px; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .copy-btn:active { background: #1D4ED8; }
+        .copy-btn.copied { background: var(--green); }
+        .msg-toggle-btn { width: 100%; padding: 10px; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--slate); font-family: 'Sarabun', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .msg-box-wrap { display: none; margin-top: 8px; }
+        .msg-box-wrap.open { display: block; }
+        .msg-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 11px; color: var(--navy); line-height: 1.7; white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', monospace; max-height: 180px; overflow-y: auto; }
+        .summary-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+        .summary-title { font-size: 12px; font-weight: 700; color: var(--slate); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+        .summary-row { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .summary-row:last-child { border-bottom: none; }
+        .summary-key { color: var(--slate-light); font-weight: 500; min-width: 72px; flex-shrink: 0; }
+        .summary-val { color: var(--navy); font-weight: 600; word-break: break-word; }
+        .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+        .action-btn { padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--white); font-family: 'Sarabun', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy-2); cursor: pointer; text-align: center; }
+        .action-btn:active { background: var(--bg); }
+        .success-footer { text-align: center; padding: 16px 0; border-top: 1px solid var(--border); }
+        .success-footer .brand   { font-size: 12px; font-weight: 700; color: var(--navy-2); letter-spacing: 1px; }
+        .success-footer .tagline { font-size: 11px; color: var(--slate-light); margin-top: 2px; }
+
+        @media (min-width: 640px) {
+            .date-list { padding: 0 20px 20px; }
+            .legend-inline { padding: 8px 20px 14px; }
+            .payment-section { margin: 0 20px 20px; }
+            .slot-btn { min-height: 70px; }
+        }
+        @media (min-width: 1024px) {
+            .header { padding: 28px 32px 24px; }
+            .date-list { padding: 0 32px 24px; }
+            .legend-inline { padding: 8px 32px 16px; }
+            .payment-section { margin: 0 32px 24px; }
+            .date-num { font-size: 32px; }
+            .slot-btn { min-height: 76px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-main" id="pageMain">
+
+    <div class="header">
+        <div class="header-top">
+            <span class="brand-tag">K2PS Innovation</span>
+            <span class="escrow-badge">Escrow ปลอดภัย</span>
+        </div>
+        <h1>นัดหมายเข้ารับสินค้า</h1>
+        <p class="subtitle">เลือกเดือนและรอบเวลาที่สะดวก</p>
+    </div>
+
+    <div class="notice-bar">
+        <span style="font-size:16px;flex-shrink:0">💰</span>
+        <span class="notice-text">ผู้ซื้อชำระเงินแล้ว · เงินดูแลโดย Escrow · ผู้ขายรับเงินก่อนเข้ารับสินค้า</span>
+    </div>
+
+    <!-- MONTH NAV -->
+    <div class="month-nav">
+        <button class="month-arrow disabled" id="prevBtn" onclick="switchMonth(-1)">‹</button>
+        <div class="month-center">
+            <span class="month-label" id="monthLabel">กุมภาพันธ์ 2569</span>
+            <span class="month-sublabel" id="monthMeta">7 รอบว่าง</span>
+            <div class="month-dots">
+                <div class="month-dot active" id="dot0"></div>
+                <div class="month-dot" id="dot1"></div>
+            </div>
+        </div>
+        <button class="month-arrow" id="nextBtn" onclick="switchMonth(1)">›</button>
+    </div>
+
+    <div class="legend-inline">
+        <div class="legend-item"><div class="legend-dot available"></div>ว่าง</div>
+        <div class="legend-item"><div class="legend-dot limited"></div>เหลือน้อย</div>
+        <div class="legend-item"><div class="legend-dot full"></div>เต็ม</div>
+    </div>
+
+    <!-- PANEL 0: กุมภาพันธ์ -->
+    <div class="month-panel active" id="panel-0">
+        <div class="date-list" id="febList">
+            <!-- filled by JS -->
+        </div>
+    </div>
+
+    <!-- PANEL 1: มีนาคม -->
+    <div class="month-panel" id="panel-1">
+        <div class="date-list" id="marchList">
+            <!-- filled by JS -->
+        </div>
+    </div>
+
+    <div class="payment-section">
+        <h3>🔒 เงื่อนไขการรับเงิน</h3>
+        <p>เงินถูกดูแลใน Escrow เรียบร้อยแล้ว · ผู้ขายได้รับเงินเต็มจำนวนก่อนเข้ารับสินค้า · สมาชิกใหม่ต้องผ่านการยืนยันตัวตนครั้งแรก</p>
+    </div>
+
+    <div class="footer">
+        <div class="brand">K2PS INNOVATION</div>
+        <div class="tagline">ระบบ Escrow และนัดรับสินค้าที่ปลอดภัย</div>
+    </div>
+</div>
+
+<!-- STICKY -->
+<div class="sticky-bar" id="stickyBar">
+    <div class="sticky-bar-inner">
+        <div class="sticky-selection">
+            <div class="sticky-selection-label">รอบที่เลือก</div>
+            <div class="sticky-selection-value empty" id="stickyText">ยังไม่ได้เลือกรอบ</div>
+        </div>
+        <button class="sticky-cta" id="stickyCta" disabled onclick="openModal()">ยืนยันนัดหมาย</button>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div class="modal-header">
+            <h2>กรอกข้อมูลเข้ารับสินค้า</h2>
+            <div class="booking-chips">
+                <div class="booking-chip"><span>วันที่</span> <span id="chipDate">—</span></div>
+                <div class="booking-chip"><span>เวลา</span>  <span id="chipTime">—</span></div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form id="bookingForm" onsubmit="submitForm(event)" novalidate>
+                <div class="form-group">
+                    <label class="form-label">ชื่อ-นามสกุล <span class="req">*</span></label>
+                    <input type="text" class="form-input" id="name" placeholder="กรอกชื่อ-นามสกุล" autocomplete="name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">เบอร์โทรศัพท์ <span class="req">*</span></label>
+                    <input type="tel" class="form-input" id="phone" placeholder="08x-xxx-xxxx" autocomplete="tel" inputmode="tel" maxlength="12" required>
+                    <div class="form-hint error-msg" id="phoneErr">รูปแบบเบอร์โทรไม่ถูกต้อง</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ที่อยู่เข้ารับสินค้า <span class="req">*</span></label>
+                    <input type="text" class="form-input" id="addr" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ" autocomplete="street-address" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">หมายเหตุ</label>
+                    <input type="text" class="form-input" id="note" placeholder="เช่น โปรดโทรล่วงหน้า 30 นาที">
+                </div>
+                <div class="privacy-bar">
+                    <span class="icon">🔒</span>
+                    <span>ข้อมูลถูกเข้ารหัสและใช้เพื่อการจัดส่งเท่านั้น</span>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>ยืนยันข้อมูลการนัดหมาย</button>
+                <span class="cancel-link" onclick="closeModal()">ยกเลิก / เลือกรอบใหม่</span>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- SUCCESS PAGE -->
+<div class="page-success" id="pageSuccess">
+    <div class="success-page">
+        <div class="success-header">
+            <div class="success-check">✓</div>
+            <div class="success-title">บันทึกนัดหมายสำเร็จ</div>
+            <div class="success-sub">เจ้าหน้าที่จะยืนยันภายใน 30 นาที</div>
+        </div>
+        <div class="ref-hero">
+            <div class="ref-label">รหัสนัดรับสินค้า</div>
+            <div class="ref-number" id="refNum">—</div>
+            <div class="ref-hint">เก็บรหัสนี้ไว้อ้างอิงกับเจ้าหน้าที่</div>
+        </div>
+        <div class="next-step-card">
+            <div class="next-step-title">📋 ขั้นตอนถัดไป</div>
+            <div class="next-step-desc">กดปุ่มด้านล่างเพื่อคัดลอกข้อความและส่งให้แอดมินทาง LINE</div>
+            <button class="copy-btn" id="copyBtn" onclick="copyMessage()"><span id="copyText">📋 คัดลอกข้อความส่งแอดมิน LINE</span></button>
+            <button class="msg-toggle-btn" onclick="toggleMsg(this)"><span>▼ ดูข้อความที่จะคัดลอก</span></button>
+            <div class="msg-box-wrap" id="msgBoxWrap"><div class="msg-box" id="msgBox"></div></div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-title">สรุปข้อมูลการนัดหมาย</div>
+            <div class="summary-row"><span class="summary-key">วันที่</span><span class="summary-val" id="sumDate">—</span></div>
+            <div class="summary-row"><span class="summary-key">เวลา</span><span class="summary-val" id="sumTime">—</span></div>
+            <div class="summary-row"><span class="summary-key">ชื่อ</span><span class="summary-val" id="sumName">—</span></div>
+            <div class="summary-row"><span class="summary-key">เบอร์</span><span class="summary-val" id="sumPhone">—</span></div>
+            <div class="summary-row"><span class="summary-key">ที่อยู่</span><span class="summary-val" id="sumAddr">—</span></div>
+            <div class="summary-row" id="sumNoteRow" style="display:none"><span class="summary-key">หมายเหตุ</span><span class="summary-val" id="sumNote">—</span></div>
+        </div>
+        <div class="action-row">
+            <button class="action-btn" onclick="bookNew()">🔄 จองรอบใหม่</button>
+            <button class="action-btn" onclick="copyMessage()">📋 คัดลอกอีกครั้ง</button>
+        </div>
+        <div class="success-footer">
+            <div class="brand">K2PS INNOVATION</div>
+            <div class="tagline">ระบบ Escrow และนัดรับสินค้าที่ปลอดภัย</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrfyL9Lj9PD2Lv8zFs3twMVjAwHnPimUuyPf2d2oszA1A_cd1h_ykgTKpO3IWC4408yQ/exec';
+
+// ═══════════════════════════════════════════════════
+// ⚙️ DATA CONFIG — แก้ตรงนี้อย่างเดียว
+// ═══════════════════════════════════════════════════
+
+// กุมภาพันธ์ 2569 (เฉพาะวันที่มีรอบ)
+// 'a' = ว่าง, 'l' = เหลือน้อย, 'f' = เต็ม
+const FEB_DATA = {
+    22: { am:'l', pm:'l', weekday:'อาทิตย์' },
+    23: { am:'l', pm:'a', weekday:'จันทร์' },
+    24: { am:'l', pm:'l', weekday:'อังคาร' },
+    25: { am:'l', pm:'a', weekday:'พุธ' },
+    26: { am:'l', pm:'l', weekday:'พฤหัสบดี' },
+    27: { am:'a', pm:'f', weekday:'ศุกร์' },
+    28: { am:'l', pm:'l', weekday:'เสาร์' }
+};
+
+// มีนาคม 2569 (วันที่ 1-31) — ตัวอย่าง แก้ได้ทีหลัง
+const MARCH_DATA = {
+    1:  { am:'a', pm:'a', weekday:'เสาร์' },
+    2:  { am:'a', pm:'l', weekday:'อาทิตย์' },
+    3:  { am:'l', pm:'a', weekday:'จันทร์' },
+    4:  { am:'a', pm:'a', weekday:'อังคาร' },
+    5:  { am:'a', pm:'l', weekday:'พุธ' },
+    6:  { am:'l', pm:'l', weekday:'พฤหัสบดี' },
+    7:  { am:'a', pm:'f', weekday:'ศุกร์' },
+    8:  { am:'l', pm:'a', weekday:'เสาร์' },
+    9:  { am:'a', pm:'a', weekday:'อาทิตย์' },
+    10: { am:'a', pm:'l', weekday:'จันทร์' },
+    11: { am:'l', pm:'a', weekday:'อังคาร' },
+    12: { am:'a', pm:'a', weekday:'พุธ' },
+    13: { am:'f', pm:'a', weekday:'พฤหัสบดี' },
+    14: { am:'a', pm:'l', weekday:'ศุกร์' },
+    15: { am:'l', pm:'l', weekday:'เสาร์' },
+    16: { am:'a', pm:'a', weekday:'อาทิตย์' },
+    17: { am:'l', pm:'a', weekday:'จันทร์' },
+    18: { am:'a', pm:'l', weekday:'อังคาร' },
+    19: { am:'a', pm:'a', weekday:'พุธ' },
+    20: { am:'l', pm:'f', weekday:'พฤหัสบดี' },
+    21: { am:'a', pm:'a', weekday:'ศุกร์' },
+    22: { am:'l', pm:'l', weekday:'เสาร์' },
+    23: { am:'a', pm:'l', weekday:'อาทิตย์' },
+    24: { am:'a', pm:'a', weekday:'จันทร์' },
+    25: { am:'l', pm:'a', weekday:'อังคาร' },
+    26: { am:'a', pm:'l', weekday:'พุธ' },
+    27: { am:'f', pm:'a', weekday:'พฤหัสบดี' },
+    28: { am:'a', pm:'l', weekday:'ศุกร์' },
+    29: { am:'l', pm:'a', weekday:'เสาร์' },
+    30: { am:'a', pm:'a', weekday:'อาทิตย์' },
+    31: { am:'l', pm:'l', weekday:'จันทร์' }
+};
+
+const MONTH_CONFIG = [
+    { label:'กุมภาพันธ์ 2569', monthName:'กุมภาพันธ์ 2569', monthNum:'02', data: FEB_DATA,   containerId:'febList' },
+    { label:'มีนาคม 2569',     monthName:'มีนาคม 2569',     monthNum:'03', data: MARCH_DATA, containerId:'marchList' }
+];
+
+// ═══════════════════════════════════════════════════
+
+let currentMonth = 0;
+let selBtn = null, selDay = null, selPeriod = null, selWeekday = null, selMonthName = null, selMonthNum = null;
+let currentMessage = '';
+
+// ─── BUILD CARDS ───
+function buildCards(cfg) {
+    const list = document.getElementById(cfg.containerId);
+    if (list.children.length > 0) return;
+    const S = { a:'available', l:'limited', f:'full' };
+    const L = { a:'ว่าง', l:'เหลือน้อย', f:'เต็ม' };
+    let html = '';
+    Object.keys(cfg.data).sort((a,b)=>+a-+b).forEach(d => {
+        const info = cfg.data[d];
+        const hasAvail = info.am==='a' || info.pm==='a';
+        const allFull  = info.am==='f' && info.pm==='f';
+        const cardCls  = hasAvail ? 'date-card has-available' : 'date-card';
+        const bdgCls   = hasAvail ? 'avail-badge has-open' : (allFull ? 'avail-badge all-full' : 'avail-badge limited-only');
+        const bdgTxt   = hasAvail ? 'มีรอบว่าง' : (allFull ? 'เต็มทั้งวัน' : 'เหลือน้อย');
+        const slot = (period, s) => s === 'f'
+            ? `<button class="slot-btn full" disabled><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">เต็ม</span></button>`
+            : `<button class="slot-btn ${S[s]}" onclick="selectSlot(this,${d},'${period}','${info.weekday}','${cfg.monthName}','${cfg.monthNum}')"><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">${L[s]}</span></button>`;
+        html += `<div class="${cardCls}"><div class="date-card-header"><div class="date-info"><div class="date-num">${d}</div><div class="date-detail"><span class="date-weekday">วัน${info.weekday}</span><span class="date-month-name">${cfg.monthName}</span></div></div><span class="${bdgCls}">${bdgTxt}</span></div><div class="slot-grid">${slot('am',info.am)}${slot('pm',info.pm)}</div></div>`;
+    });
+    list.innerHTML = html;
+}
+
+// ─── MONTH SWITCH ───
+function switchMonth(dir) {
+    const next = currentMonth + dir;
+    if (next < 0 || next > 1) return;
+    currentMonth = next;
+    document.querySelectorAll('.month-panel').forEach((p,i) => p.classList.toggle('active', i===currentMonth));
+    document.querySelectorAll('.month-dot').forEach((d,i)   => d.classList.toggle('active', i===currentMonth));
+    document.getElementById('monthLabel').textContent = MONTH_CONFIG[currentMonth].label;
+    document.getElementById('monthMeta').textContent  = currentMonth===0 ? '7 รอบว่าง' : '31 วัน';
+    document.getElementById('prevBtn').classList.toggle('disabled', currentMonth===0);
+    document.getElementById('nextBtn').classList.toggle('disabled', currentMonth===1);
+    buildCards(MONTH_CONFIG[currentMonth]);
+    resetSelection();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── SLOT SELECT ───
+function selectSlot(btn, day, period, weekday, monthName, monthNum) {
+    if (selBtn) selBtn.classList.remove('selected');
+    btn.classList.add('selected');
+    selBtn=btn; selDay=day; selPeriod=period; selWeekday=weekday; selMonthName=monthName; selMonthNum=monthNum;
+    const shortMonth = monthNum==='02' ? 'ก.พ.' : 'มี.ค.';
+    const periodTh   = period==='am' ? 'รอบเช้า 09:00–12:00' : 'รอบบ่าย 13:00–17:00';
+    document.getElementById('stickyText').textContent = day+' '+shortMonth+' · '+periodTh;
+    document.getElementById('stickyText').classList.remove('empty');
+    document.getElementById('stickyCta').disabled = false;
+}
+
+function resetSelection() {
+    if (selBtn) { selBtn.classList.remove('selected'); selBtn=null; }
+    selDay=selPeriod=selWeekday=selMonthName=selMonthNum=null;
+    document.getElementById('stickyText').textContent = 'ยังไม่ได้เลือกรอบ';
+    document.getElementById('stickyText').classList.add('empty');
+    document.getElementById('stickyCta').disabled = true;
+}
+
+// ─── MODAL ───
+function openModal() {
+    if (!selDay) return;
+    document.getElementById('chipDate').textContent = selDay+' '+selMonthName+' (วัน'+selWeekday+')';
+    document.getElementById('chipTime').textContent = selPeriod==='am' ? 'รอบเช้า: 09:00–12:00 น.' : 'รอบบ่าย: 13:00–17:00 น.';
+    document.getElementById('modal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    setTimeout(()=>document.getElementById('name').focus(), 300);
+}
+function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+// ─── PHONE ───
+document.getElementById('phone').addEventListener('input', function() {
+    let v = this.value.replace(/\D/g,'').slice(0,10);
+    if (v.length>6) v=v.slice(0,3)+'-'+v.slice(3,6)+'-'+v.slice(6);
+    else if (v.length>3) v=v.slice(0,3)+'-'+v.slice(3);
+    this.value=v; validatePhone(); checkFormReady();
+});
+function validatePhone() {
+    const raw=document.getElementById('phone').value.replace(/\D/g,'');
+    const ok=/^0[0-9]{8,9}$/.test(raw);
+    const el=document.getElementById('phone'), err=document.getElementById('phoneErr');
+    if (!raw.length) { el.classList.remove('valid','error'); err.classList.remove('show'); }
+    else if (ok)     { el.classList.add('valid'); el.classList.remove('error'); err.classList.remove('show'); }
+    else             { el.classList.add('error'); el.classList.remove('valid'); err.classList.add('show'); }
+    return ok;
+}
+['name','addr'].forEach(id=>document.getElementById(id).addEventListener('input', checkFormReady));
+function checkFormReady() {
+    const name=document.getElementById('name').value.trim();
+    const phone=document.getElementById('phone').value.replace(/\D/g,'');
+    const addr=document.getElementById('addr').value.trim();
+    document.getElementById('submitBtn').disabled = !(name && /^0[0-9]{8,9}$/.test(phone) && addr);
+}
+
+// ─── SUBMIT ───
+async function submitForm(e) {
+    e.preventDefault();
+    if (!validatePhone()) return;
+    const name=document.getElementById('name').value.trim();
+    const phone=document.getElementById('phone').value.trim();
+    const addr=document.getElementById('addr').value.trim();
+    const note=document.getElementById('note').value.trim();
+    const btn=document.getElementById('submitBtn');
+    btn.disabled=true; btn.textContent='กำลังบันทึก...';
+    const now=new Date();
+    const refNum='KPS-LOG-'+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+String(Math.floor(Math.random()*1000)).padStart(3,'0');
+    const dateText=selDay+' '+selMonthName+' (วัน'+selWeekday+')';
+    const timeText=selPeriod==='am' ? 'รอบเช้า: 09:00–12:00 น.' : 'รอบบ่าย: 13:00–17:00 น.';
+    const ts=now.toLocaleString('th-TH',{timeZone:'Asia/Bangkok'});
+    try { await fetch(APPS_SCRIPT_URL+'?'+new URLSearchParams({ref:refNum,name,phone,address:addr,note,date:dateText,slot:timeText,ts}).toString(),{method:'GET',redirect:'follow'}); } catch(e){}
+    currentMessage='✅ บันทึกข้อมูลเข้ารับสินค้าเรียบร้อยแล้ว\n\n📅 วันที่: '+dateText+'\n⏰ เวลา: '+timeText+'\n👤 ชื่อ: '+name+'\n📞 เบอร์: '+phone+'\n📍 ที่อยู่: '+addr+'\n'+(note?'📝 หมายเหตุ: '+note+'\n':'')+' 🔖 รหัสนัด: '+refNum+'\n\nเจ้าหน้าที่จะติดต่อยืนยัน ภายใน 30 นาที';
+    document.getElementById('refNum').textContent=refNum;
+    document.getElementById('msgBox').textContent=currentMessage;
+    document.getElementById('sumDate').textContent=dateText;
+    document.getElementById('sumTime').textContent=timeText;
+    document.getElementById('sumName').textContent=name;
+    document.getElementById('sumPhone').textContent=phone;
+    document.getElementById('sumAddr').textContent=addr;
+    if (note) { document.getElementById('sumNote').textContent=note; document.getElementById('sumNoteRow').style.display='flex'; }
+    closeModal();
+    document.getElementById('pageMain').classList.add('hidden');
+    document.getElementById('stickyBar').style.display='none';
+    document.getElementById('pageSuccess').classList.add('show');
+    window.scrollTo(0,0);
+}
+
+// ─── COPY ───
+function copyMessage() {
+    const btn=document.getElementById('copyBtn'), lbl=document.getElementById('copyText');
+    const done=()=>{ btn.classList.add('copied'); lbl.textContent='✓ คัดลอกแล้ว'; setTimeout(()=>{ btn.classList.remove('copied'); lbl.textContent='📋 คัดลอกข้อความส่งแอดมิน LINE'; },2500); };
+    if (navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(currentMessage).then(done);
+    else { const ta=document.createElement('textarea'); ta.value=currentMessage; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
+}
+function toggleMsg(btn) {
+    const wrap=document.getElementById('msgBoxWrap'), open=wrap.classList.toggle('open');
+    btn.querySelector('span').textContent=open?'▲ ซ่อนข้อความ':'▼ ดูข้อความที่จะคัดลอก';
+}
+function bookNew() {
+    document.getElementById('pageSuccess').classList.remove('show');
+    document.getElementById('pageMain').classList.remove('hidden');
+    document.getElementById('stickyBar').style.display='';
+    resetSelection();
+    document.getElementById('bookingForm').reset();
+    document.getElementById('submitBtn').disabled=true;
+    document.querySelectorAll('.form-input').forEach(el=>el.classList.remove('valid','error'));
+    document.getElementById('phoneErr').classList.remove('show');
+    document.getElementById('sumNoteRow').style.display='none';
+    window.scrollTo(0,0);
+}
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target===document.getElementById('modal')) closeModal(); });
+
+// ─── INIT ───
+buildCards(MONTH_CONFIG[0]);
+</script>
+
+</body>
+</html>
