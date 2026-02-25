@@ -48,6 +48,38 @@
         .header h1 { font-size: 20px; font-weight: 800; color: var(--white); line-height: 1.3; margin-bottom: 4px; }
         .header .subtitle { font-size: 13px; color: #94A3B8; font-weight: 400; }
 
+        /* TRUST STRIP */
+        .trust-strip {
+            background: #0F2744; border-bottom: 1px solid #1E3A5F;
+            padding: 9px 16px; display: flex; align-items: center;
+            justify-content: center; gap: 6px; flex-wrap: wrap;
+        }
+        .trust-item {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 11px; font-weight: 600; color: #93C5FD; white-space: nowrap;
+        }
+        .trust-item::before { content: '✓'; color: #34D399; font-weight: 800; font-size: 12px; }
+        .trust-sep { color: #334155; font-size: 14px; line-height: 1; }
+
+        /* STEP BAR */
+        .step-bar {
+            background: var(--white); border-bottom: 1px solid var(--border);
+            padding: 11px 16px; display: flex; align-items: center; justify-content: center;
+        }
+        .step-item { display: flex; align-items: center; gap: 6px; }
+        .step-num {
+            width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 800; color: var(--slate-light); background: var(--bg); flex-shrink: 0;
+        }
+        .step-num.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+        .step-num.done   { background: var(--green); border-color: var(--green); color: var(--white); font-size: 11px; }
+        .step-lbl { font-size: 11px; font-weight: 600; color: var(--slate-light); }
+        .step-lbl.active { color: var(--blue); }
+        .step-lbl.done   { color: var(--green); }
+        .step-line { width: 20px; height: 2px; background: var(--border); margin: 0 8px; flex-shrink: 0; }
+        .step-line.done { background: var(--green); }
+
         /* NOTICE */
         .notice-bar { background: #1E3A5F; border-bottom: 1px solid #1D4ED8; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
         .notice-text { font-size: 12px; color: #BAE6FD; line-height: 1.5; font-weight: 500; }
@@ -205,8 +237,28 @@
         .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .cancel-link { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: var(--slate-light); cursor: pointer; padding: 6px; }
 
-        /* SUCCESS */
-        .success-page { max-width: 600px; margin: 0 auto; padding: 24px 16px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+        /* LINE BUTTON */
+        .line-btn {
+            width: 100%; padding: 15px; background: #06C755; border: none; border-radius: 10px;
+            color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 16px; font-weight: 800;
+            cursor: pointer; -webkit-tap-highlight-color: transparent; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 4px 12px rgba(6,199,85,0.35); transition: all 0.15s;
+            letter-spacing: 0.3px;
+        }
+        .line-btn:active { background: #05A847; transform: scale(0.98); box-shadow: 0 2px 6px rgba(6,199,85,0.25); }
+        .line-btn-icon { width: 24px; height: 24px; background: var(--white); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .line-btn-icon svg { width: 16px; height: 16px; }
+
+        /* SUCCESS enhancements */
+        .escrow-confirmed {
+            background: #F0FDF4; border: 1.5px solid var(--green-border);
+            border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .escrow-confirmed-icon { font-size: 22px; flex-shrink: 0; }
+        .escrow-confirmed-text { font-size: 12px; color: #166534; line-height: 1.5; }
+        .escrow-confirmed-text strong { display: block; font-size: 13px; margin-bottom: 2px; }
         .success-header { text-align: center; margin-bottom: 24px; }
         .success-check { width: 72px; height: 72px; background: var(--green-bg); border: 3px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; color: var(--green); }
         .success-title { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
@@ -265,6 +317,33 @@
         </div>
         <h1>นัดหมายเข้ารับสินค้า</h1>
         <p class="subtitle">เลือกเดือนและรอบเวลาที่สะดวก</p>
+    </div>
+
+    <!-- TRUST STRIP -->
+    <div class="trust-strip">
+        <span class="trust-item">ระบบ Escrow คุ้มครองเงิน</span>
+        <span class="trust-sep">·</span>
+        <span class="trust-item">ได้รับเงินก่อนส่งสินค้า</span>
+        <span class="trust-sep">·</span>
+        <span class="trust-item">ยืนยันตัวตนทุกรายการ</span>
+    </div>
+
+    <!-- STEP BAR -->
+    <div class="step-bar" id="stepBar">
+        <div class="step-item">
+            <div class="step-num active" id="s1">1</div>
+            <span class="step-lbl active" id="sl1">เลือกรอบ</span>
+        </div>
+        <div class="step-line" id="line1"></div>
+        <div class="step-item">
+            <div class="step-num" id="s2">2</div>
+            <span class="step-lbl" id="sl2">กรอกข้อมูล</span>
+        </div>
+        <div class="step-line" id="line2"></div>
+        <div class="step-item">
+            <div class="step-num" id="s3">3</div>
+            <span class="step-lbl" id="sl3">ยืนยัน LINE</span>
+        </div>
     </div>
 
     <div class="notice-bar">
@@ -377,18 +456,41 @@
             <div class="success-title">บันทึกนัดหมายสำเร็จ</div>
             <div class="success-sub">เจ้าหน้าที่จะยืนยันภายใน 30 นาที</div>
         </div>
+
+        <!-- Escrow confirmed trust card -->
+        <div class="escrow-confirmed">
+            <div class="escrow-confirmed-icon">🔒</div>
+            <div class="escrow-confirmed-text">
+                <strong>เงินของคุณปลอดภัย</strong>
+                ระบบ Escrow ดูแลเงินทุกบาท · ผู้ขายได้รับเงินเต็มจำนวนก่อนเจ้าหน้าที่เข้ารับสินค้า
+            </div>
+        </div>
+
         <div class="ref-hero">
             <div class="ref-label">รหัสนัดรับสินค้า</div>
             <div class="ref-number" id="refNum">—</div>
             <div class="ref-hint">เก็บรหัสนี้ไว้อ้างอิงกับเจ้าหน้าที่</div>
         </div>
+
+        <!-- LINE AUTO-SEND (Primary CTA) -->
         <div class="next-step-card">
-            <div class="next-step-title">📋 ขั้นตอนถัดไป</div>
-            <div class="next-step-desc">กดปุ่มด้านล่างเพื่อคัดลอกข้อความและส่งให้แอดมินทาง LINE</div>
-            <button class="copy-btn" id="copyBtn" onclick="copyMessage()"><span id="copyText">📋 คัดลอกข้อความส่งแอดมิน LINE</span></button>
-            <button class="msg-toggle-btn" onclick="toggleMsg(this)"><span>▼ ดูข้อความที่จะคัดลอก</span></button>
+            <div class="next-step-title">📋 ขั้นตอนถัดไป — ส่งข้อมูลให้แอดมิน</div>
+            <div class="next-step-desc">กดปุ่มด้านล่าง LINE จะเปิดพร้อมข้อความสำเร็จรูป กดส่งได้เลยทันที</div>
+
+            <!-- LINE Deep Link Button -->
+            <button class="line-btn" id="lineBtn" onclick="openLINE()">
+                <span class="line-btn-icon">
+                    <svg viewBox="0 0 24 24" fill="#06C755"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.070 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+                </span>
+                ส่งข้อมูลให้แอดมินทาง LINE
+            </button>
+
+            <!-- Fallback copy -->
+            <button class="copy-btn" id="copyBtn" onclick="copyMessage()"><span id="copyText">📋 คัดลอกข้อความ (สำรอง)</span></button>
+            <button class="msg-toggle-btn" onclick="toggleMsg(this)"><span>▼ ดูข้อความที่จะส่ง</span></button>
             <div class="msg-box-wrap" id="msgBoxWrap"><div class="msg-box" id="msgBox"></div></div>
         </div>
+
         <div class="summary-card">
             <div class="summary-title">สรุปข้อมูลการนัดหมาย</div>
             <div class="summary-row"><span class="summary-key">วันที่</span><span class="summary-val" id="sumDate">—</span></div>
@@ -400,7 +502,7 @@
         </div>
         <div class="action-row">
             <button class="action-btn" onclick="bookNew()">🔄 จองรอบใหม่</button>
-            <button class="action-btn" onclick="copyMessage()">📋 คัดลอกอีกครั้ง</button>
+            <button class="action-btn" onclick="openLINE()">💬 เปิด LINE อีกครั้ง</button>
         </div>
         <div class="success-footer">
             <div class="brand">K2PS INNOVATION</div>
@@ -412,6 +514,12 @@
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrfyL9Lj9PD2Lv8zFs3twMVjAwHnPimUuyPf2d2oszA1A_cd1h_ykgTKpO3IWC4408yQ/exec';
 
+// ══════════════════════════════════════════════════
+// ⚙️ LINE OA CONFIG — ใส่ LINE OA ID ตรงนี้
+// เช่น '@k2ps' หรือ '@abc1234d'
+// ══════════════════════════════════════════════════
+const LINE_OA_ID = '@YOUR_LINE_OA_ID';
+
 // ═══════════════════════════════════════════════════
 // ⚙️ DATA CONFIG — แก้ตรงนี้อย่างเดียว
 // ═══════════════════════════════════════════════════
@@ -422,9 +530,9 @@ const FEB_DATA = {
     22: { am:'f', pm:'f', weekday:'อาทิตย์' },
     23: { am:'f', pm:'f', weekday:'จันทร์' },
     24: { am:'f', pm:'f', weekday:'อังคาร' },
-    25: { am:'l', pm:'a', weekday:'พุธ' },
+    25: { am:'f', pm:'f', weekday:'พุธ' },
     26: { am:'l', pm:'l', weekday:'พฤหัสบดี' },
-    27: { am:'a', pm:'f', weekday:'ศุกร์' },
+    27: { am:'a', pm:'l', weekday:'ศุกร์' },
     28: { am:'l', pm:'l', weekday:'เสาร์' }
 };
 
@@ -496,7 +604,30 @@ function buildCards(cfg) {
     list.innerHTML = html;
 }
 
-// ─── MONTH SWITCH ───
+// ─── STEP INDICATOR ───
+function setStep(n) {
+    for (let i=1;i<=3;i++) {
+        const num=document.getElementById('s'+i), lbl=document.getElementById('sl'+i);
+        if (!num) continue;
+        if (i<n)       { num.className='step-num done'; num.textContent='✓'; lbl.className='step-lbl done'; }
+        else if (i===n){ num.className='step-num active'; num.textContent=i; lbl.className='step-lbl active'; }
+        else           { num.className='step-num'; num.textContent=i; lbl.className='step-lbl'; }
+    }
+    for (let i=1;i<=2;i++) {
+        const line=document.getElementById('line'+i);
+        if (line) line.className = i<n ? 'step-line done' : 'step-line';
+    }
+}
+
+// ─── LINE AUTO-SEND ───
+function openLINE() {
+    if (!currentMessage) return;
+    const oaId = LINE_OA_ID.replace('@','');
+    const text  = encodeURIComponent(currentMessage);
+    // Deep link: เปิด chat กับ OA พร้อมข้อความ
+    const deepLink = 'https://line.me/R/oaMessage/' + oaId + '/?text=' + text;
+    window.open(deepLink, '_blank');
+}
 function switchMonth(dir) {
     const next = currentMonth + dir;
     if (next < 0 || next > 1) return;
@@ -522,6 +653,7 @@ function selectSlot(btn, day, period, weekday, monthName, monthNum) {
     document.getElementById('stickyText').textContent = day+' '+shortMonth+' · '+periodTh;
     document.getElementById('stickyText').classList.remove('empty');
     document.getElementById('stickyCta').disabled = false;
+    setStep(2);
 }
 
 function resetSelection() {
@@ -599,6 +731,8 @@ async function submitForm(e) {
     document.getElementById('pageMain').classList.add('hidden');
     document.getElementById('stickyBar').style.display='none';
     document.getElementById('pageSuccess').classList.add('show');
+    document.getElementById('stepBar').style.display='none';
+    setStep(3);
     window.scrollTo(0,0);
 }
 
@@ -617,7 +751,9 @@ function bookNew() {
     document.getElementById('pageSuccess').classList.remove('show');
     document.getElementById('pageMain').classList.remove('hidden');
     document.getElementById('stickyBar').style.display='';
+    document.getElementById('stepBar').style.display='';
     resetSelection();
+    setStep(1);
     document.getElementById('bookingForm').reset();
     document.getElementById('submitBtn').disabled=true;
     document.querySelectorAll('.form-input').forEach(el=>el.classList.remove('valid','error'));
@@ -629,6 +765,7 @@ document.getElementById('modal').addEventListener('click',e=>{ if(e.target===doc
 
 // ─── INIT ───
 buildCards(MONTH_CONFIG[0]);
+setStep(1);
 </script>
 
 </body>
