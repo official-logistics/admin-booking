@@ -280,6 +280,39 @@
         /* SUCCESS PAGE WRAPPER */
         .success-page { padding: 20px 16px; max-width: 600px; margin: 0 auto; }
 
+        /* SUMMARY POPUP */
+        .popup { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 300; align-items: flex-end; justify-content: center; }
+        .popup.show { display: flex; }
+        @media (min-width: 640px) {
+            .popup { align-items: center; padding: 16px; }
+            .popup-sheet { border-radius: 12px !important; }
+        }
+        .popup-sheet {
+            background: var(--white); border-radius: 16px 16px 0 0;
+            width: 100%; max-width: 480px; max-height: 92vh;
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
+            padding-bottom: env(safe-area-inset-bottom);
+            animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .popup-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 10px auto 0; }
+        .popup-inner { padding: 16px; }
+        .popup-title { font-size: 16px; font-weight: 800; color: var(--navy); text-align: center; margin-bottom: 4px; }
+        .popup-sub   { font-size: 12px; color: var(--slate-light); text-align: center; margin-bottom: 16px; }
+        .popup-ref-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; text-align: center; margin-bottom: 14px; }
+        .popup-ref-label { font-size: 10px; color: var(--slate-light); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+        .popup-ref-num   { font-family: "Courier New", monospace; font-size: 15px; font-weight: 900; color: var(--navy); letter-spacing: 1px; }
+        .popup-rows { background: var(--white); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
+        .popup-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .popup-row:last-child { border-bottom: none; }
+        .popup-row-icon { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; margin-top: 1px; }
+        .popup-row-val  { color: var(--navy); font-weight: 600; line-height: 1.4; word-break: break-word; }
+        .popup-copy-btn { width: 100%; padding: 14px; background: var(--green); border: none; border-radius: 8px; color: var(--white); font-family: "Sarabun", sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
+        .popup-copy-btn:active { background: #15803D; }
+        .popup-copy-btn.copied { background: #166534; }
+        .popup-close-btn { width: 100%; padding: 12px; background: none; border: 1.5px solid var(--border); border-radius: 8px; color: var(--slate); font-family: "Sarabun", sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .popup-close-btn:active { background: var(--bg); }
+
         @media (min-width: 640px) {
             .date-list { padding: 0 20px 20px; }
             .legend-inline { padding: 8px 20px 14px; }
@@ -393,6 +426,32 @@
         <button class="sticky-cta" id="stickyCta" disabled onclick="openModal()">ยืนยันนัดหมาย</button>
     </div>
 </div>
+
+<!-- SUMMARY POPUP -->
+<div class="popup" id="summaryPopup">
+    <div class="popup-sheet">
+        <div class="popup-handle"></div>
+        <div class="popup-inner">
+            <div class="popup-title">บันทึกข้อมูลเข้ารับสินค้าเรียบร้อยแล้ว</div>
+            <div class="popup-sub">รหัสเข้ารับสินค้าของคุณคือ</div>
+            <div class="popup-ref-box">
+                <div class="popup-ref-label">รหัสนัดรับสินค้า</div>
+                <div class="popup-ref-num" id="popupRef">—</div>
+            </div>
+            <div class="popup-rows">
+                <div class="popup-row"><span class="popup-row-icon">📅</span><span class="popup-row-val" id="popupDate">—</span></div>
+                <div class="popup-row"><span class="popup-row-icon">⏰</span><span class="popup-row-val" id="popupTime">—</span></div>
+                <div class="popup-row"><span class="popup-row-icon">👤</span><span class="popup-row-val" id="popupName">—</span></div>
+                <div class="popup-row"><span class="popup-row-icon">📞</span><span class="popup-row-val" id="popupPhone">—</span></div>
+                <div class="popup-row"><span class="popup-row-icon">📍</span><span class="popup-row-val" id="popupAddr">—</span></div>
+                <div class="popup-row" id="popupNoteRow" style="display:none"><span class="popup-row-icon">📝</span><span class="popup-row-val" id="popupNote">—</span></div>
+            </div>
+            <button class="popup-copy-btn" id="popupCopyBtn" onclick="popupCopy()"><span id="popupCopyText">📋 คัดลอกข้อความ</span></button>
+            <button class="popup-close-btn" onclick="closePopup()">ปิดหน้าต่าง</button>
+        </div>
+    </div>
+</div>
+
 
 <!-- MODAL -->
 <div class="modal" id="modal">
@@ -700,12 +759,40 @@ async function submitForm(e) {
     // แสดง warning ถ้า Google Sheets บันทึกไม่สำเร็จ — ไม่หยุด flow
     const warnEl = document.getElementById('saveWarning');
     if (warnEl) warnEl.style.display = saved ? 'none' : 'flex';
+    // Fill popup fields
+    document.getElementById('popupRef').textContent   = refNum;
+    document.getElementById('popupDate').textContent  = dateText;
+    document.getElementById('popupTime').textContent  = timeText;
+    document.getElementById('popupName').textContent  = name;
+    document.getElementById('popupPhone').textContent = phone;
+    document.getElementById('popupAddr').textContent  = addr;
+    if (note) {
+        document.getElementById('popupNote').textContent = note;
+        document.getElementById('popupNoteRow').style.display = 'flex';
+    }
     closeModal();
+    // แสดง popup ก่อน
+    document.getElementById('summaryPopup').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    window.scrollTo(0,0);
+}
+
+// ─── POPUP ───
+function closePopup() {
+    document.getElementById('summaryPopup').classList.remove('show');
+    document.body.style.overflow = '';
+    // ไปหน้า success หลังปิด popup
     document.getElementById('pageMain').classList.add('hidden');
     document.getElementById('stickyBar').style.display='none';
     document.getElementById('stepBar').style.display='none';
     document.getElementById('pageSuccess').classList.add('show');
     window.scrollTo(0,0);
+}
+function popupCopy() {
+    const btn=document.getElementById('popupCopyBtn'), lbl=document.getElementById('popupCopyText');
+    const done=()=>{ btn.classList.add('copied'); lbl.textContent='✓ คัดลอกแล้ว'; setTimeout(()=>{ btn.classList.remove('copied'); lbl.textContent='📋 คัดลอกข้อความ'; },2500); };
+    if (navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(currentMessage).then(done);
+    else { const ta=document.createElement('textarea'); ta.value=currentMessage; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
 }
 
 // ─── COPY ───
@@ -732,9 +819,11 @@ function bookNew() {
     document.querySelectorAll('.form-input').forEach(el=>el.classList.remove('valid','error'));
     document.getElementById('phoneErr').classList.remove('show');
     document.getElementById('sumNoteRow').style.display='none';
+    document.getElementById('popupNoteRow').style.display='none';
     window.scrollTo(0,0);
 }
 document.getElementById('modal').addEventListener('click',e=>{ if(e.target===document.getElementById('modal')) closeModal(); });
+document.getElementById('summaryPopup').addEventListener('click',e=>{ if(e.target===document.getElementById('summaryPopup')) closePopup(); });
 
 // ─── INIT ───
 // Set correct initial month meta
