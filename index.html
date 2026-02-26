@@ -237,19 +237,6 @@
         .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .cancel-link { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: var(--slate-light); cursor: pointer; padding: 6px; }
 
-        /* LINE BUTTON */
-        .line-btn {
-            width: 100%; padding: 15px; background: #06C755; border: none; border-radius: 10px;
-            color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 16px; font-weight: 800;
-            cursor: pointer; -webkit-tap-highlight-color: transparent; margin-bottom: 10px;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 4px 12px rgba(6,199,85,0.35); transition: all 0.15s;
-            letter-spacing: 0.3px;
-        }
-        .line-btn:active { background: #05A847; transform: scale(0.98); box-shadow: 0 2px 6px rgba(6,199,85,0.25); }
-        .line-btn-icon { width: 24px; height: 24px; background: var(--white); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .line-btn-icon svg { width: 16px; height: 16px; }
-
         /* SUCCESS enhancements */
         .escrow-confirmed {
             background: #F0FDF4; border: 1.5px solid var(--green-border);
@@ -270,10 +257,10 @@
         .next-step-card { background: #EFF6FF; border: 2px solid #BFDBFE; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
         .next-step-title { font-size: 13px; font-weight: 700; color: #1D4ED8; margin-bottom: 4px; }
         .next-step-desc  { font-size: 12px; color: #3B82F6; line-height: 1.5; margin-bottom: 14px; }
-        .copy-btn { width: 100%; padding: 13px; background: var(--blue); border: none; border-radius: 8px; color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; margin-bottom: 8px; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .copy-btn { width: 100%; padding: 13px; background: var(--blue); border: none; border-radius: 8px; color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .copy-btn:active { background: #1D4ED8; }
         .copy-btn.copied { background: var(--green); }
-        .msg-toggle-btn { width: 100%; padding: 10px; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--slate); font-family: 'Sarabun', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .msg-toggle-btn { width: 100%; padding: 10px; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--slate); font-family: 'Sarabun', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; }
         .msg-box-wrap { display: none; margin-top: 8px; }
         .msg-box-wrap.open { display: block; }
         .msg-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 11px; color: var(--navy); line-height: 1.7; white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', monospace; max-height: 180px; overflow-y: auto; }
@@ -283,12 +270,15 @@
         .summary-row:last-child { border-bottom: none; }
         .summary-key { color: var(--slate-light); font-weight: 500; min-width: 72px; flex-shrink: 0; }
         .summary-val { color: var(--navy); font-weight: 600; word-break: break-word; }
-        .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
-        .action-btn { padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--white); font-family: 'Sarabun', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy-2); cursor: pointer; text-align: center; }
+        .action-row { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 24px; }
+        .action-btn { padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--white); font-family: 'Sarabun', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy-2); cursor: pointer; text-align: center; text-decoration: none; display: block; }
         .action-btn:active { background: var(--bg); }
         .success-footer { text-align: center; padding: 16px 0; border-top: 1px solid var(--border); }
         .success-footer .brand   { font-size: 12px; font-weight: 700; color: var(--navy-2); letter-spacing: 1px; }
         .success-footer .tagline { font-size: 11px; color: var(--slate-light); margin-top: 2px; }
+
+        /* SUCCESS PAGE WRAPPER */
+        .success-page { padding: 20px 16px; max-width: 600px; margin: 0 auto; }
 
         @media (min-width: 640px) {
             .date-list { padding: 0 20px 20px; }
@@ -342,7 +332,7 @@
         <div class="step-line" id="line2"></div>
         <div class="step-item">
             <div class="step-num" id="s3">3</div>
-            <span class="step-lbl" id="sl3">ยืนยัน LINE</span>
+            <span class="step-lbl" id="sl3">เสร็จสิ้น</span>
         </div>
     </div>
 
@@ -356,7 +346,7 @@
         <button class="month-arrow disabled" id="prevBtn" onclick="switchMonth(-1)">‹</button>
         <div class="month-center">
             <span class="month-label" id="monthLabel">กุมภาพันธ์ 2569</span>
-            <span class="month-sublabel" id="monthMeta">28 วัน</span>
+            <span class="month-sublabel" id="monthMeta">กำลังโหลด...</span>
             <div class="month-dots">
                 <div class="month-dot active" id="dot0"></div>
                 <div class="month-dot" id="dot1"></div>
@@ -373,16 +363,12 @@
 
     <!-- PANEL 0: กุมภาพันธ์ -->
     <div class="month-panel active" id="panel-0">
-        <div class="date-list" id="febList">
-            <!-- filled by JS -->
-        </div>
+        <div class="date-list" id="febList"></div>
     </div>
 
     <!-- PANEL 1: มีนาคม -->
     <div class="month-panel" id="panel-1">
-        <div class="date-list" id="marchList">
-            <!-- filled by JS -->
-        </div>
+        <div class="date-list" id="marchList"></div>
     </div>
 
     <div class="payment-section">
@@ -393,7 +379,7 @@
     <div class="footer">
         <div class="brand">K2PS MARKETPLACE</div>
         <div class="tagline">ระบบ Escrow และนัดรับสินค้าที่ปลอดภัย</div>
-            <div class="tagline" style="margin-top:4px;font-size:10px;color:#64748B;">© 2026 K2PS MARKETPLACE. All rights reserved.</div>
+        <div class="tagline" style="margin-top:4px;font-size:10px;color:#64748B;">© 2026 K2PS MARKETPLACE. All rights reserved.</div>
     </div>
 </div>
 
@@ -458,7 +444,9 @@
             <div class="success-sub">เจ้าหน้าที่จะยืนยันภายใน 30 นาที</div>
         </div>
 
-        <!-- Escrow confirmed trust card -->
+        <!-- แสดงเฉพาะเมื่อ Google Sheets บันทึกไม่สำเร็จ -->
+        <div id="saveWarning" style="display:none; background:#FEF3C7; border:1.5px solid #FCD34D; border-radius:10px; padding:12px 14px; margin-bottom:16px; align-items:center; gap:10px;"><span style="font-size:18px;flex-shrink:0">⚠️</span><span style="font-size:12px;color:#92400E;line-height:1.5;">บันทึกในระบบยังไม่สำเร็จ · กรุณาคัดลอกข้อมูลด้านล่างแล้วแจ้งแอดมินโดยตรง</span></div>
+
         <div class="escrow-confirmed">
             <div class="escrow-confirmed-icon">🔒</div>
             <div class="escrow-confirmed-text">
@@ -473,22 +461,12 @@
             <div class="ref-hint">เก็บรหัสนี้ไว้อ้างอิงกับเจ้าหน้าที่</div>
         </div>
 
-        <!-- LINE AUTO-SEND (Primary CTA) -->
+        <!-- COPY MESSAGE SECTION -->
         <div class="next-step-card">
-            <div class="next-step-title">📋 ขั้นตอนถัดไป — ส่งข้อมูลให้แอดมิน</div>
-            <div class="next-step-desc">กดปุ่มด้านล่าง LINE จะเปิดพร้อมข้อความสำเร็จรูป กดส่งได้เลยทันที</div>
-
-            <!-- LINE Deep Link Button -->
-            <a href="https://line.me/R/ti/p/~@449icqdu" target="_blank" class="line-btn">
-                <span class="line-btn-icon">
-                    <svg viewBox="0 0 24 24" fill="#06C755"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.070 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-                </span>
-                ส่งข้อมูลให้แอดมินทาง LINE
-            </a>
-
-            <!-- Fallback copy -->
-            <button class="copy-btn" id="copyBtn" onclick="copyMessage()"><span id="copyText">📋 คัดลอกข้อความ (สำรอง)</span></button>
-            <button class="msg-toggle-btn" onclick="toggleMsg(this)"><span>▼ ดูข้อความที่จะส่ง</span></button>
+            <div class="next-step-title">📋 คัดลอกข้อมูลเพื่อแจ้งแอดมิน</div>
+            <div class="next-step-desc">กดปุ่มด้านล่างเพื่อคัดลอกข้อมูลนัดหมาย แล้วส่งให้แอดมินผ่านช่องทางที่ต้องการ</div>
+            <button class="copy-btn" id="copyBtn" onclick="copyMessage()"><span id="copyText">📋 คัดลอกข้อมูลนัดหมาย</span></button>
+            <button class="msg-toggle-btn" onclick="toggleMsg(this)"><span>▼ ดูข้อความที่จะคัดลอก</span></button>
             <div class="msg-box-wrap" id="msgBoxWrap"><div class="msg-box" id="msgBox"></div></div>
         </div>
 
@@ -501,10 +479,11 @@
             <div class="summary-row"><span class="summary-key">ที่อยู่</span><span class="summary-val" id="sumAddr">—</span></div>
             <div class="summary-row" id="sumNoteRow" style="display:none"><span class="summary-key">หมายเหตุ</span><span class="summary-val" id="sumNote">—</span></div>
         </div>
+
         <div class="action-row">
             <button class="action-btn" onclick="bookNew()">🔄 จองรอบใหม่</button>
-            <a href="https://line.me/R/ti/p/~@449icqdu" target="_blank" class="action-btn">เพิ่ม LINE</a>
         </div>
+
         <div class="success-footer">
             <div class="brand">K2PS MARKETPLACE</div>
             <div class="tagline">ระบบ Escrow และนัดรับสินค้าที่ปลอดภัย</div>
@@ -516,24 +495,15 @@
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRfoSC-qB9LoLb9y2IdMwInSXZ07f_fbCCzUPv5R8QJDsdVn_2p3KDY5mRbIF3XA8-Kw/exec';
 
-// ══════════════════════════════════════════════════
-// ⚙️ LINE OA CONFIG — ใส่ LINE OA ID ตรงนี้
-// เช่น '@k2ps' หรือ '@abc1234d'
-// ══════════════════════════════════════════════════
-const LINE_OA_ID = '@YOUR_LINE_OA_ID';
-
 // ═══════════════════════════════════════════════════
 // ⚙️ DATA CONFIG — แก้ตรงนี้อย่างเดียว
 // ═══════════════════════════════════════════════════
 
-// กุมภาพันธ์ 2569 (เฉพาะวันที่มีรอบ)
-// 'a' = ว่าง, 'l' = เหลือน้อย, 'f' = เต็ม
 const FEB_DATA = {
     27: { am:'a', pm:'l', weekday:'ศุกร์' },
     28: { am:'l', pm:'l', weekday:'เสาร์' }
 };
 
-// มีนาคม 2569 (วันที่ 1-31) — ตัวอย่าง แก้ได้ทีหลัง
 const MARCH_DATA = {
     1:  { am:'a', pm:'a', weekday:'เสาร์' },
     2:  { am:'a', pm:'l', weekday:'อาทิตย์' },
@@ -567,6 +537,12 @@ const MARCH_DATA = {
     30: { am:'a', pm:'a', weekday:'อาทิตย์' },
     31: { am:'l', pm:'l', weekday:'จันทร์' }
 };
+
+// ─── COUNT AVAILABLE SLOTS ───
+function countAvailable(data) {
+    return Object.values(data).reduce((n, d) =>
+        n + (d.am !== 'f' ? 1 : 0) + (d.pm !== 'f' ? 1 : 0), 0);
+}
 
 const MONTH_CONFIG = [
     { label:'กุมภาพันธ์ 2569', monthName:'กุมภาพันธ์ 2569', monthNum:'02', data: FEB_DATA,   containerId:'febList' },
@@ -616,26 +592,18 @@ function setStep(n) {
     }
 }
 
-// ─── LINE AUTO-SEND ───
-function openLINE() {
-    if (!currentMessage) return;
-    const oaId = LINE_OA_ID.replace('@','');
-    const text  = encodeURIComponent(currentMessage);
-    // Deep link: เปิด chat กับ OA พร้อมข้อความ
-    const deepLink = 'https://line.me/R/oaMessage/' + oaId + '/?text=' + text;
-    window.open(deepLink, '_blank');
-}
 function switchMonth(dir) {
     const next = currentMonth + dir;
     if (next < 0 || next > 1) return;
     currentMonth = next;
     document.querySelectorAll('.month-panel').forEach((p,i) => p.classList.toggle('active', i===currentMonth));
     document.querySelectorAll('.month-dot').forEach((d,i)   => d.classList.toggle('active', i===currentMonth));
-    document.getElementById('monthLabel').textContent = MONTH_CONFIG[currentMonth].label;
-    document.getElementById('monthMeta').textContent  = currentMonth===0 ? '7 รอบว่าง' : '31 วัน';
+    const cfg = MONTH_CONFIG[currentMonth];
+    document.getElementById('monthLabel').textContent = cfg.label;
+    document.getElementById('monthMeta').textContent  = countAvailable(cfg.data) + ' รอบว่าง';
     document.getElementById('prevBtn').classList.toggle('disabled', currentMonth===0);
     document.getElementById('nextBtn').classList.toggle('disabled', currentMonth===1);
-    buildCards(MONTH_CONFIG[currentMonth]);
+    buildCards(cfg);
     resetSelection();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -710,11 +678,16 @@ async function submitForm(e) {
     const btn=document.getElementById('submitBtn');
     btn.disabled=true; btn.textContent='กำลังบันทึก...';
     const now=new Date();
-    const refNum='KPS-LOG-'+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+String(Math.floor(Math.random()*1000)).padStart(3,'0');
+    // Ref number: unique via timestamp base36
+    const refNum='KPS-'+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+Date.now().toString(36).slice(-4).toUpperCase();
     const dateText=selDay+' '+selMonthName+' (วัน'+selWeekday+')';
     const timeText=selPeriod==='am' ? 'รอบเช้า: 09:00–12:00 น.' : 'รอบบ่าย: 13:00–17:00 น.';
     const ts=now.toLocaleString('th-TH',{timeZone:'Asia/Bangkok'});
-    try { await fetch(APPS_SCRIPT_URL+'?'+new URLSearchParams({ref:refNum,name,phone,address:addr,note,date:dateText,slot:timeText,ts}).toString(),{method:'GET',redirect:'follow'}); } catch(e){}
+    let saved = false;
+    try {
+        const res = await fetch(APPS_SCRIPT_URL+'?'+new URLSearchParams({ref:refNum,name,phone,address:addr,note,date:dateText,slot:timeText,ts}).toString(),{method:'GET',redirect:'follow'});
+        saved = res.ok;
+    } catch(e) {}
     currentMessage='✅ บันทึกข้อมูลเข้ารับสินค้าเรียบร้อยแล้ว\n\n📅 วันที่: '+dateText+'\n⏰ เวลา: '+timeText+'\n👤 ชื่อ: '+name+'\n📞 เบอร์: '+phone+'\n📍 ที่อยู่: '+addr+'\n'+(note?'📝 หมายเหตุ: '+note+'\n':'')+' 🔖 รหัสนัด: '+refNum+'\n\nเจ้าหน้าที่จะติดต่อยืนยัน ภายใน 30 นาที';
     document.getElementById('refNum').textContent=refNum;
     document.getElementById('msgBox').textContent=currentMessage;
@@ -724,19 +697,21 @@ async function submitForm(e) {
     document.getElementById('sumPhone').textContent=phone;
     document.getElementById('sumAddr').textContent=addr;
     if (note) { document.getElementById('sumNote').textContent=note; document.getElementById('sumNoteRow').style.display='flex'; }
+    // แสดง warning ถ้า Google Sheets บันทึกไม่สำเร็จ — ไม่หยุด flow
+    const warnEl = document.getElementById('saveWarning');
+    if (warnEl) warnEl.style.display = saved ? 'none' : 'flex';
     closeModal();
     document.getElementById('pageMain').classList.add('hidden');
     document.getElementById('stickyBar').style.display='none';
-    document.getElementById('pageSuccess').classList.add('show');
     document.getElementById('stepBar').style.display='none';
-    setStep(3);
+    document.getElementById('pageSuccess').classList.add('show');
     window.scrollTo(0,0);
 }
 
 // ─── COPY ───
 function copyMessage() {
     const btn=document.getElementById('copyBtn'), lbl=document.getElementById('copyText');
-    const done=()=>{ btn.classList.add('copied'); lbl.textContent='✓ คัดลอกแล้ว'; setTimeout(()=>{ btn.classList.remove('copied'); lbl.textContent='📋 คัดลอกข้อความส่งแอดมิน LINE'; },2500); };
+    const done=()=>{ btn.classList.add('copied'); lbl.textContent='✓ คัดลอกแล้ว'; setTimeout(()=>{ btn.classList.remove('copied'); lbl.textContent='📋 คัดลอกข้อมูลนัดหมาย'; },2500); };
     if (navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(currentMessage).then(done);
     else { const ta=document.createElement('textarea'); ta.value=currentMessage; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
 }
@@ -745,6 +720,7 @@ function toggleMsg(btn) {
     btn.querySelector('span').textContent=open?'▲ ซ่อนข้อความ':'▼ ดูข้อความที่จะคัดลอก';
 }
 function bookNew() {
+    currentMessage = '';
     document.getElementById('pageSuccess').classList.remove('show');
     document.getElementById('pageMain').classList.remove('hidden');
     document.getElementById('stickyBar').style.display='';
@@ -761,6 +737,8 @@ function bookNew() {
 document.getElementById('modal').addEventListener('click',e=>{ if(e.target===document.getElementById('modal')) closeModal(); });
 
 // ─── INIT ───
+// Set correct initial month meta
+document.getElementById('monthMeta').textContent = countAvailable(MONTH_CONFIG[0].data) + ' รอบว่าง';
 buildCards(MONTH_CONFIG[0]);
 setStep(1);
 </script>
