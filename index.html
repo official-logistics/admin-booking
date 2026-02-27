@@ -380,9 +380,10 @@
         <div class="month-center">
             <span class="month-label" id="monthLabel">กุมภาพันธ์ 2569</span>
             <span class="month-sublabel" id="monthMeta">กำลังโหลด...</span>
-            <div class="month-dots">
+            <div class="month-dots" id="monthDots">
                 <div class="month-dot active" id="dot0"></div>
                 <div class="month-dot" id="dot1"></div>
+                <div class="month-dot" id="dot2"></div>
             </div>
         </div>
         <button class="month-arrow" id="nextBtn" onclick="switchMonth(1)">›</button>
@@ -402,6 +403,11 @@
     <!-- PANEL 1: มีนาคม -->
     <div class="month-panel" id="panel-1">
         <div class="date-list" id="marchList"></div>
+    </div>
+
+    <!-- PANEL 2: เมษายน -->
+    <div class="month-panel" id="panel-2">
+        <div class="date-list" id="aprilList"></div>
     </div>
 
     <div class="payment-section">
@@ -559,41 +565,41 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRfoSC-qB9LoLb
 // ═══════════════════════════════════════════════════
 
 const FEB_DATA = {
-    28: { am:'l', pm:'l', weekday:'เสาร์' }
+    28: { am:'l', pm:'l' }
 };
 
 const MARCH_DATA = {
-    1:  { am:'a', pm:'a', weekday:'เสาร์' },
-    2:  { am:'a', pm:'l', weekday:'อาทิตย์' },
-    3:  { am:'l', pm:'a', weekday:'จันทร์' },
-    4:  { am:'a', pm:'a', weekday:'อังคาร' },
-    5:  { am:'a', pm:'l', weekday:'พุธ' },
-    6:  { am:'l', pm:'l', weekday:'พฤหัสบดี' },
-    7:  { am:'a', pm:'f', weekday:'ศุกร์' },
-    8:  { am:'l', pm:'a', weekday:'เสาร์' },
-    9:  { am:'a', pm:'a', weekday:'อาทิตย์' },
-    10: { am:'a', pm:'l', weekday:'จันทร์' },
-    11: { am:'l', pm:'a', weekday:'อังคาร' },
-    12: { am:'a', pm:'a', weekday:'พุธ' },
-    13: { am:'f', pm:'a', weekday:'พฤหัสบดี' },
-    14: { am:'a', pm:'l', weekday:'ศุกร์' },
-    15: { am:'l', pm:'l', weekday:'เสาร์' },
-    16: { am:'a', pm:'a', weekday:'อาทิตย์' },
-    17: { am:'l', pm:'a', weekday:'จันทร์' },
-    18: { am:'a', pm:'l', weekday:'อังคาร' },
-    19: { am:'a', pm:'a', weekday:'พุธ' },
-    20: { am:'l', pm:'f', weekday:'พฤหัสบดี' },
-    21: { am:'a', pm:'a', weekday:'ศุกร์' },
-    22: { am:'l', pm:'l', weekday:'เสาร์' },
-    23: { am:'a', pm:'l', weekday:'อาทิตย์' },
-    24: { am:'a', pm:'a', weekday:'จันทร์' },
-    25: { am:'l', pm:'a', weekday:'อังคาร' },
-    26: { am:'a', pm:'l', weekday:'พุธ' },
-    27: { am:'f', pm:'a', weekday:'พฤหัสบดี' },
-    28: { am:'a', pm:'l', weekday:'ศุกร์' },
-    29: { am:'l', pm:'a', weekday:'เสาร์' },
-    30: { am:'a', pm:'a', weekday:'อาทิตย์' },
-    31: { am:'l', pm:'l', weekday:'จันทร์' }
+    1:  { am:'a', pm:'a' },
+    2:  { am:'a', pm:'l' },
+    3:  { am:'l', pm:'a' },
+    4:  { am:'a', pm:'a' },
+    5:  { am:'a', pm:'l' },
+    6:  { am:'l', pm:'l' },
+    7:  { am:'a', pm:'f' },
+    8:  { am:'l', pm:'a' },
+    9:  { am:'a', pm:'a' },
+    10: { am:'a', pm:'l' },
+    11: { am:'l', pm:'a' },
+    12: { am:'a', pm:'a' },
+    13: { am:'f', pm:'a' },
+    14: { am:'a', pm:'l' },
+    15: { am:'l', pm:'l' },
+    16: { am:'a', pm:'a' },
+    17: { am:'l', pm:'a' },
+    18: { am:'a', pm:'l' },
+    19: { am:'a', pm:'a' },
+    20: { am:'l', pm:'f' },
+    21: { am:'a', pm:'a' },
+    22: { am:'l', pm:'l' },
+    23: { am:'a', pm:'l' },
+    24: { am:'a', pm:'a' },
+    25: { am:'l', pm:'a' },
+    26: { am:'a', pm:'l' },
+    27: { am:'f', pm:'a' },
+    28: { am:'a', pm:'l' },
+    29: { am:'l', pm:'a' },
+    30: { am:'a', pm:'a' },
+    31: { am:'l', pm:'l' }
 };
 
 // ─── COUNT AVAILABLE SLOTS ───
@@ -603,8 +609,8 @@ function countAvailable(data) {
 }
 
 const MONTH_CONFIG = [
-    { label:'กุมภาพันธ์ 2569', monthName:'กุมภาพันธ์ 2569', monthNum:'02', data: FEB_DATA,   containerId:'febList' },
-    { label:'มีนาคม 2569',     monthName:'มีนาคม 2569',     monthNum:'03', data: MARCH_DATA, containerId:'marchList' }
+    { label:'กุมภาพันธ์ 2569', monthName:'กุมภาพันธ์ 2569', monthNum:'02', year:2026, data: FEB_DATA,   containerId:'febList' },
+    { label:'มีนาคม 2569',     monthName:'มีนาคม 2569',     monthNum:'03', year:2026, data: MARCH_DATA, containerId:'marchList' },
 ];
 
 // ═══════════════════════════════════════════════════
@@ -612,6 +618,14 @@ const MONTH_CONFIG = [
 let currentMonth = 0;
 let selBtn = null, selDay = null, selPeriod = null, selWeekday = null, selMonthName = null, selMonthNum = null;
 let currentMessage = '';
+
+// ─── WEEKDAY HELPER ───
+const WEEKDAYS_TH = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+// monthNum = '02' = Feb 2026 (BE 2569), '03' = Mar 2026
+function getWeekday(monthNum, day, year) {
+    const month = parseInt(monthNum) - 1;
+    return WEEKDAYS_TH[new Date(year, month, parseInt(day)).getDay()];
+}
 
 // ─── BUILD CARDS ───
 function buildCards(cfg) {
@@ -622,6 +636,7 @@ function buildCards(cfg) {
     let html = '';
     Object.keys(cfg.data).sort((a,b)=>+a-+b).forEach(d => {
         const info = cfg.data[d];
+        const weekday = getWeekday(cfg.monthNum, d, cfg.year);
         const hasAvail = info.am==='a' || info.pm==='a';
         const allFull  = info.am==='f' && info.pm==='f';
         const cardCls  = hasAvail ? 'date-card has-available' : 'date-card';
@@ -629,8 +644,8 @@ function buildCards(cfg) {
         const bdgTxt   = hasAvail ? 'มีรอบว่าง' : (allFull ? 'เต็มทั้งวัน' : 'เหลือน้อย');
         const slot = (period, s) => s === 'f'
             ? `<button class="slot-btn full" disabled><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">เต็ม</span></button>`
-            : `<button class="slot-btn ${S[s]}" onclick="selectSlot(this,${d},'${period}','${info.weekday}','${cfg.monthName}','${cfg.monthNum}')"><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">${L[s]}</span></button>`;
-        html += `<div class="${cardCls}"><div class="date-card-header"><div class="date-info"><div class="date-num">${d}</div><div class="date-detail"><span class="date-weekday">วัน${info.weekday}</span><span class="date-month-name">${cfg.monthName}</span></div></div><span class="${bdgCls}">${bdgTxt}</span></div><div class="slot-grid">${slot('am',info.am)}${slot('pm',info.pm)}</div></div>`;
+            : `<button class="slot-btn ${S[s]}" onclick="selectSlot(this,${d},'${period}','${weekday}','${cfg.monthName}','${cfg.monthNum}')"><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">${L[s]}</span></button>`;
+        html += `<div class="${cardCls}"><div class="date-card-header"><div class="date-info"><div class="date-num">${d}</div><div class="date-detail"><span class="date-weekday">วัน${weekday}</span><span class="date-month-name">${cfg.monthName}</span></div></div><span class="${bdgCls}">${bdgTxt}</span></div><div class="slot-grid">${slot('am',info.am)}${slot('pm',info.pm)}</div></div>`;
     });
     list.innerHTML = html;
 }
@@ -652,7 +667,8 @@ function setStep(n) {
 
 function switchMonth(dir) {
     const next = currentMonth + dir;
-    if (next < 0 || next > 1) return;
+    const maxMonth = MONTH_CONFIG.length - 1;
+    if (next < 0 || next > maxMonth) return;
     currentMonth = next;
     document.querySelectorAll('.month-panel').forEach((p,i) => p.classList.toggle('active', i===currentMonth));
     document.querySelectorAll('.month-dot').forEach((d,i)   => d.classList.toggle('active', i===currentMonth));
@@ -660,7 +676,7 @@ function switchMonth(dir) {
     document.getElementById('monthLabel').textContent = cfg.label;
     document.getElementById('monthMeta').textContent  = countAvailable(cfg.data) + ' รอบว่าง';
     document.getElementById('prevBtn').classList.toggle('disabled', currentMonth===0);
-    document.getElementById('nextBtn').classList.toggle('disabled', currentMonth===1);
+    document.getElementById('nextBtn').classList.toggle('disabled', currentMonth===MONTH_CONFIG.length-1);
     buildCards(cfg);
     resetSelection();
     window.scrollTo({ top: 0, behavior: 'smooth' });
