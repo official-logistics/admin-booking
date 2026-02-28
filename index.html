@@ -399,6 +399,11 @@
         <div class="date-list" id="marchList"></div>
     </div>
 
+    <!-- PANEL 1: เมษายน -->
+    <div class="month-panel" id="panel-1">
+        <div class="date-list" id="aprilList"></div>
+    </div>
+
     <div class="payment-section">
         <h3>🔒 เงื่อนไขการรับเงิน</h3>
         <p>เงินถูกดูแลใน Escrow เรียบร้อยแล้ว · ผู้ขายได้รับเงินเต็มจำนวนก่อนเข้ารับสินค้า · สมาชิกใหม่ต้องผ่านการยืนยันตัวตนครั้งแรก</p>
@@ -556,35 +561,43 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRfoSC-qB9LoLb
 const MARCH_DATA = {
     1:  { am:'a', pm:'a' },
     2:  { am:'a', pm:'l' },
-    3:  { am:'a', pm:'a' },
+    3:  { am:'l', pm:'a' },
     4:  { am:'a', pm:'a' },
-    5:  { am:'a', pm:'a' },
-    6:  { am:'a', pm:'a' },
-    7:  { am:'a', pm:'a' },
-    8:  { am:'a', pm:'a' },
+    5:  { am:'a', pm:'l' },
+    6:  { am:'l', pm:'l' },
+    7:  { am:'a', pm:'f' },
+    8:  { am:'l', pm:'a' },
     9:  { am:'a', pm:'a' },
-    10: { am:'a', pm:'a' },
-    11: { am:'a', pm:'a' },
+    10: { am:'a', pm:'l' },
+    11: { am:'l', pm:'a' },
     12: { am:'a', pm:'a' },
-    13: { am:'a', pm:'a' },
+    13: { am:'f', pm:'a' },
     14: { am:'a', pm:'l' },
-    15: { am:'l', pm:'a' },
+    15: { am:'l', pm:'l' },
     16: { am:'a', pm:'a' },
     17: { am:'l', pm:'a' },
     18: { am:'a', pm:'l' },
     19: { am:'a', pm:'a' },
-    20: { am:'l', pm:'a' },
+    20: { am:'l', pm:'f' },
     21: { am:'a', pm:'a' },
     22: { am:'l', pm:'l' },
     23: { am:'a', pm:'l' },
     24: { am:'a', pm:'a' },
     25: { am:'l', pm:'a' },
     26: { am:'a', pm:'l' },
-    27: { am:'a', pm:'a' },
+    27: { am:'f', pm:'a' },
     28: { am:'a', pm:'l' },
     29: { am:'l', pm:'a' },
     30: { am:'a', pm:'a' },
     31: { am:'l', pm:'l' }
+};
+
+const APRIL_DATA = {
+    1:  { am:'a', pm:'a' },
+    2:  { am:'a', pm:'l' },
+    3:  { am:'l', pm:'a' },
+    4:  { am:'a', pm:'a' },
+    5:  { am:'a', pm:'l' }
 };
 
 // ─── COUNT AVAILABLE SLOTS ───
@@ -672,7 +685,8 @@ function selectSlot(btn, day, period, weekday, monthName, monthNum) {
     if (selBtn) selBtn.classList.remove('selected');
     btn.classList.add('selected');
     selBtn=btn; selDay=day; selPeriod=period; selWeekday=weekday; selMonthName=monthName; selMonthNum=monthNum;
-    const shortMonth = monthNum==='02' ? 'ก.พ.' : 'มี.ค.';
+    const shortMonthMap = {'02':'ก.พ.','03':'มี.ค.','04':'เม.ย.','05':'พ.ค.','06':'มิ.ย.','07':'ก.ค.','08':'ส.ค.','09':'ก.ย.','10':'ต.ค.','11':'พ.ย.','12':'ธ.ค.','01':'ม.ค.'};
+    const shortMonth = shortMonthMap[monthNum] || monthNum;
     const periodTh   = period==='am' ? 'รอบเช้า 09:00–12:00' : 'รอบบ่าย 13:00–17:00';
     document.getElementById('stickyText').textContent = day+' '+shortMonth+' · '+periodTh;
     document.getElementById('stickyText').classList.remove('empty');
