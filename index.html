@@ -378,12 +378,11 @@
     <div class="month-nav">
         <button class="month-arrow disabled" id="prevBtn" onclick="switchMonth(-1)">‹</button>
         <div class="month-center">
-            <span class="month-label" id="monthLabel">กุมภาพันธ์ 2569</span>
+            <span class="month-label" id="monthLabel">มีนาคม 2569</span>
             <span class="month-sublabel" id="monthMeta">กำลังโหลด...</span>
             <div class="month-dots" id="monthDots">
                 <div class="month-dot active" id="dot0"></div>
                 <div class="month-dot" id="dot1"></div>
-                <div class="month-dot" id="dot2"></div>
             </div>
         </div>
         <button class="month-arrow" id="nextBtn" onclick="switchMonth(1)">›</button>
@@ -395,14 +394,9 @@
         <div class="legend-item"><div class="legend-dot full"></div>เต็ม</div>
     </div>
 
-    <!-- PANEL 1: มีนาคม -->
-    <div class="month-panel" id="panel-1">
+    <!-- PANEL 0: มีนาคม -->
+    <div class="month-panel active" id="panel-0">
         <div class="date-list" id="marchList"></div>
-    </div>
-
-    <!-- PANEL 2: เมษายน -->
-    <div class="month-panel" id="panel-2">
-        <div class="date-list" id="aprilList"></div>
     </div>
 
     <div class="payment-section">
@@ -562,19 +556,19 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRfoSC-qB9LoLb
 const MARCH_DATA = {
     1:  { am:'a', pm:'a' },
     2:  { am:'a', pm:'l' },
-    3:  { am:'l', pm:'a' },
+    3:  { am:'a', pm:'a' },
     4:  { am:'a', pm:'a' },
-    5:  { am:'a', pm:'l' },
+    5:  { am:'a', pm:'a' },
     6:  { am:'a', pm:'a' },
     7:  { am:'a', pm:'a' },
     8:  { am:'a', pm:'a' },
     9:  { am:'a', pm:'a' },
-    10: { am:'a', pm:'l' },
-    11: { am:'l', pm:'a' },
+    10: { am:'a', pm:'a' },
+    11: { am:'a', pm:'a' },
     12: { am:'a', pm:'a' },
     13: { am:'a', pm:'a' },
-    14: { am:'a', pm:'a' },
-    15: { am:'a', pm:'a' },
+    14: { am:'a', pm:'l' },
+    15: { am:'l', pm:'a' },
     16: { am:'a', pm:'a' },
     17: { am:'l', pm:'a' },
     18: { am:'a', pm:'l' },
@@ -600,8 +594,8 @@ function countAvailable(data) {
 }
 
 const MONTH_CONFIG = [
-    { label:'กุมภาพันธ์ 2569', monthName:'กุมภาพันธ์ 2569', monthNum:'02', year:2026, data: FEB_DATA,   containerId:'febList' },
     { label:'มีนาคม 2569',     monthName:'มีนาคม 2569',     monthNum:'03', year:2026, data: MARCH_DATA, containerId:'marchList' },
+    { label:'เมษายน 2569',     monthName:'เมษายน 2569',     monthNum:'04', year:2026, data: APRIL_DATA, containerId:'aprilList' }
 ];
 
 // ═══════════════════════════════════════════════════
