@@ -1,846 +1,1044 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0F172A">
-    <title>ระบบกำหนดการรับสินค้า | K2PS Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#071428">
+<title>ระบบกำหนดการรับสินค้า | K2PS Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
 
-        :root {
-            --navy: #0F172A; --navy-2: #1E293B; --navy-3: #334155;
-            --slate: #475569; --slate-light: #64748B;
-            --border: #E2E8F0; --bg: #F8FAFC; --white: #FFFFFF;
-            --green: #16A34A; --green-bg: #DCFCE7; --green-border: #86EFAC;
-            --amber: #D97706; --amber-bg: #FEF3C7; --amber-border: #FCD34D;
-            --blue: #2563EB; --blue-bg: #EFF6FF; --blue-border: #93C5FD;
-            --gray-bg: #F1F5F9; --gray-border: #CBD5E1;
-        }
+:root {
+  --ink:       #071428;
+  --ink-2:     #0D2040;
+  --ink-3:     #133060;
+  --royal:     #1A4DB8;
+  --royal-2:   #2160D4;
+  --sky:       #3B82F6;
+  --sky-light: #EFF6FF;
+  --sky-border:#BFDBFE;
+  --teal:      #0D9488;
+  --teal-bg:   #F0FDFA;
+  --teal-bd:   #99F6E4;
+  --green:     #16A34A;
+  --green-bg:  #F0FDF4;
+  --green-bd:  #86EFAC;
+  --amber:     #D97706;
+  --amber-bg:  #FFFBEB;
+  --amber-bd:  #FCD34D;
+  --slate:     #475569;
+  --muted:     #94A3B8;
+  --border:    #E2E8F0;
+  --bg:        #F1F5FB;
+  --white:     #FFFFFF;
+  --gold:      #F59E0B;
+}
 
-        html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+body {
+  font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  background:var(--bg); color:var(--ink);
+  min-height:100vh; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+  font-size:16px;
+}
 
-        body {
-            font-family: 'Sarabun', -apple-system, sans-serif;
-            background: var(--bg); min-height: 100vh; color: var(--navy);
-            line-height: 1.6; -webkit-font-smoothing: antialiased;
-            -webkit-tap-highlight-color: transparent; font-size: 16px;
-        }
+/* ═══ HEADER ═══ */
+.header {
+  background: linear-gradient(170deg, #071428 0%, #0D2040 45%, #133060 100%);
+  padding: 0 0 0;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,0.015) 0px,
+    rgba(255,255,255,0.015) 1px,
+    transparent 1px,
+    transparent 48px
+  );
+  pointer-events:none;
+}
+.header-accent {
+  height: 3px;
+  background: linear-gradient(90deg, var(--royal), var(--sky), var(--teal), var(--sky), var(--royal));
+  background-size: 300% 100%;
+  animation: shimmer 4s linear infinite;
+}
+@keyframes shimmer { 0%{background-position:0% 0%} 100%{background-position:300% 0%} }
 
-        .page-main { display: block; padding-bottom: 84px; }
-        .page-main.hidden { display: none; }
-        .page-success { display: none; min-height: 100vh; background: var(--bg); }
-        .page-success.show { display: block; }
+.header-inner { padding: 18px 16px 20px; position:relative; z-index:1; }
+.header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
 
-        /* HEADER */
-        .header { background: var(--navy); padding: 20px 16px 18px; border-bottom: 2px solid var(--navy-3); }
-        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        .brand-tag { font-size: 11px; font-weight: 700; color: #94A3B8; letter-spacing: 1.5px; text-transform: uppercase; }
-        .escrow-badge {
-            display: inline-flex; align-items: center; gap: 5px; background: #064E3B;
-            border: 1px solid #065F46; border-radius: 4px; padding: 3px 8px;
-            font-size: 10px; font-weight: 700; color: #6EE7B7; letter-spacing: 0.5px;
-        }
-        .escrow-badge::before { content: ''; width: 6px; height: 6px; background: #34D399; border-radius: 50%; }
-        .header h1 { font-size: 20px; font-weight: 800; color: var(--white); line-height: 1.3; margin-bottom: 4px; }
-        .header .subtitle { font-size: 13px; color: #94A3B8; font-weight: 400; }
+.brand-block { display:flex; align-items:center; gap:10px; }
+.brand-emblem {
+  width:34px; height:34px;
+  background: linear-gradient(135deg, var(--royal), var(--sky));
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:800; color:white; letter-spacing:-0.5px;
+  box-shadow: 0 4px 12px rgba(26,77,184,0.4);
+}
+.brand-text { display:flex; flex-direction:column; }
+.brand-name { font-size:11px; font-weight:700; color:#94AECB; letter-spacing:2px; text-transform:uppercase; line-height:1.2; }
+.brand-sub  { font-size:9px; color:#4A6890; font-weight:500; letter-spacing:0.5px; }
 
-        /* TRUST STRIP */
-        .trust-strip {
-            background: #0F2744; border-bottom: 1px solid #1E3A5F;
-            padding: 9px 16px; display: flex; align-items: center;
-            justify-content: center; gap: 6px; flex-wrap: wrap;
-        }
-        .trust-item {
-            display: inline-flex; align-items: center; gap: 5px;
-            font-size: 11px; font-weight: 600; color: #93C5FD; white-space: nowrap;
-        }
-        .trust-item::before { content: '✓'; color: #34D399; font-weight: 800; font-size: 12px; }
-        .trust-sep { color: #334155; font-size: 14px; line-height: 1; }
+.escrow-seal {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(13,148,136,0.15);
+  border:1px solid rgba(153,246,228,0.35);
+  border-radius:5px; padding:5px 10px;
+  font-size:10px; font-weight:700; color:#5EEAD4;
+  letter-spacing:0.5px;
+}
+.escrow-seal .dot {
+  width:7px; height:7px; background:#2DD4BF; border-radius:50%;
+  box-shadow:0 0 8px #2DD4BF;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(0.85)} }
 
-        /* STEP BAR */
-        .step-bar {
-            background: var(--white); border-bottom: 1px solid var(--border);
-            padding: 11px 16px; display: flex; align-items: center; justify-content: center;
-        }
-        .step-item { display: flex; align-items: center; gap: 6px; }
-        .step-num {
-            width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; font-weight: 800; color: var(--slate-light); background: var(--bg); flex-shrink: 0;
-        }
-        .step-num.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
-        .step-num.done   { background: var(--green); border-color: var(--green); color: var(--white); font-size: 11px; }
-        .step-lbl { font-size: 11px; font-weight: 600; color: var(--slate-light); }
-        .step-lbl.active { color: var(--blue); }
-        .step-lbl.done   { color: var(--green); }
-        .step-line { width: 20px; height: 2px; background: var(--border); margin: 0 8px; flex-shrink: 0; }
-        .step-line.done { background: var(--green); }
+.header h1 { font-size:22px; font-weight:800; color:white; line-height:1.25; margin-bottom:5px; letter-spacing:-0.3px; }
+.header-sub { font-size:13px; color:#7A9DBF; font-weight:400; }
 
-        /* NOTICE */
-        .notice-bar { background: #1E3A5F; border-bottom: 1px solid #1D4ED8; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
-        .notice-text { font-size: 12px; color: #BAE6FD; line-height: 1.5; font-weight: 500; }
+/* LIVE TIMESTAMP — anti-copy element */
+.live-bar {
+  background:rgba(255,255,255,0.04);
+  border-top:1px solid rgba(255,255,255,0.07);
+  padding:8px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.live-left { display:flex; align-items:center; gap:7px; }
+.live-dot  { width:6px; height:6px; background:#22C55E; border-radius:50%; box-shadow:0 0 6px #22C55E; animation:pulse 1.5s infinite; }
+.live-label { font-size:10px; font-weight:600; color:#4A6890; letter-spacing:0.5px; text-transform:uppercase; }
+.live-time  { font-size:11px; font-weight:700; color:#7ABFE0; font-family:monospace; letter-spacing:0.5px; }
+.session-id { font-size:9px; color:#2A4060; font-weight:600; letter-spacing:0.5px; }
 
-        /* MONTH NAV */
-        .month-nav {
-            background: var(--white); border-bottom: 1px solid var(--border);
-            padding: 12px 16px; display: flex; align-items: center;
-            justify-content: space-between; gap: 12px;
-            position: sticky; top: 0; z-index: 50;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .month-arrow {
-            width: 44px; height: 44px; background: var(--bg);
-            border: 1.5px solid var(--border); border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 20px; color: var(--navy-2); font-weight: 700;
-            -webkit-tap-highlight-color: transparent; flex-shrink: 0; transition: all 0.15s;
-            user-select: none;
-        }
-        .month-arrow:active { background: var(--border); transform: scale(0.95); }
-        .month-arrow.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
-        .month-center { flex: 1; text-align: center; }
-        .month-label { font-size: 17px; font-weight: 800; color: var(--navy); display: block; line-height: 1.2; }
-        .month-sublabel { font-size: 11px; color: var(--slate-light); font-weight: 500; margin-top: 2px; display: block; }
-        .month-dots { display: flex; justify-content: center; gap: 6px; margin-top: 7px; }
-        .month-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: background 0.2s, transform 0.2s; }
-        .month-dot.active { background: var(--blue); transform: scale(1.2); }
+/* ═══ TRUST STRIP ═══ */
+.trust-strip {
+  background:#0A1A30;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:9px 16px;
+  display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap;
+}
+.trust-item {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11px; font-weight:600; color:#5A8AB0; white-space:nowrap;
+}
+.trust-icon {
+  width:15px; height:15px;
+  background:rgba(26,77,184,0.2);
+  border:1px solid rgba(59,130,246,0.3);
+  border-radius:3px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:8px; color:#60A5FA; font-weight:800;
+}
+.trust-sep { color:#1A2A40; font-size:14px; }
 
-        /* LEGEND */
-        .legend-inline { padding: 8px 16px 12px; display: flex; gap: 14px; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--slate); font-weight: 600; }
-        .legend-dot { width: 10px; height: 10px; border-radius: 2px; border: 1px solid; flex-shrink: 0; }
-        .legend-dot.available { background: var(--green-bg); border-color: var(--green-border); }
-        .legend-dot.limited   { background: var(--amber-bg); border-color: var(--amber-border); }
-        .legend-dot.full      { background: var(--gray-bg);  border-color: var(--gray-border); }
+/* ═══ STEP BAR ═══ */
+.step-bar {
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:11px 16px;
+  display:flex; align-items:center; justify-content:center;
+}
+.step-item { display:flex; align-items:center; gap:6px; }
+.step-num {
+  width:24px; height:24px; border-radius:50%;
+  border:2px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:800; color:var(--muted); background:var(--bg);
+}
+.step-num.active { background:var(--royal); border-color:var(--royal); color:white; }
+.step-num.done   { background:var(--green); border-color:var(--green); color:white; }
+.step-lbl { font-size:11px; font-weight:600; color:var(--muted); }
+.step-lbl.active { color:var(--royal); }
+.step-lbl.done   { color:var(--green); }
+.step-line { width:22px; height:2px; background:var(--border); margin:0 8px; }
+.step-line.done { background:var(--green); }
 
-        /* PANELS */
-        .month-panel { display: none; }
-        .month-panel.active { display: block; }
+/* ═══ NOTICE ═══ */
+.notice-bar {
+  background:#0C1E38;
+  border-bottom:1px solid #1A3A6A;
+  padding:10px 16px;
+  display:flex; align-items:center; gap:10px;
+}
+.notice-chip {
+  width:30px; height:30px; flex-shrink:0;
+  background:rgba(26,77,184,0.2);
+  border:1px solid rgba(59,130,246,0.3);
+  border-radius:7px;
+  display:flex; align-items:center; justify-content:center; font-size:14px;
+}
+.notice-text { font-size:12px; color:#7AB0D8; line-height:1.5; font-weight:500; }
 
-        /* DATE CARDS */
-        .date-list { padding: 0 12px 16px; display: flex; flex-direction: column; gap: 10px; }
-        .date-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
-        .date-card.has-available { border-color: var(--green-border); box-shadow: 0 0 0 1px var(--green-border); }
-        .date-card-header {
-            padding: 12px 14px; display: flex; align-items: center;
-            justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--bg);
-        }
-        .date-card.has-available .date-card-header { background: #F0FDF4; border-bottom-color: var(--green-border); }
-        .date-info { display: flex; align-items: center; gap: 10px; }
-        .date-num { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1; }
-        .date-detail { display: flex; flex-direction: column; }
-        .date-weekday { font-size: 12px; color: var(--slate-light); font-weight: 500; }
-        .date-month-name { font-size: 13px; font-weight: 600; color: var(--navy-2); }
-        .avail-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
-        .avail-badge.has-open    { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-        .avail-badge.limited-only{ background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
-        .avail-badge.all-full    { background: var(--gray-bg);  color: #64748B;      border: 1px solid var(--gray-border); }
-        .avail-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+/* ═══ MONTH NAV ═══ */
+.month-nav {
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:12px 16px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  position:sticky; top:0; z-index:50;
+  box-shadow:0 2px 12px rgba(7,20,40,0.08);
+}
+.month-arrow {
+  width:42px; height:42px;
+  background:var(--bg); border:1.5px solid var(--border); border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:20px; color:var(--ink-2); font-weight:700;
+  transition:all 0.15s; flex-shrink:0; user-select:none;
+}
+.month-arrow:active { background:var(--sky-light); border-color:var(--sky-border); transform:scale(0.95); }
+.month-arrow.disabled { opacity:0.2; cursor:not-allowed; pointer-events:none; }
+.month-center { flex:1; text-align:center; }
+.month-label   { font-size:17px; font-weight:800; color:var(--ink); display:block; letter-spacing:-0.3px; }
+.month-meta    { font-size:11px; color:var(--muted); font-weight:500; margin-top:2px; display:block; }
+.month-dots    { display:flex; justify-content:center; gap:5px; margin-top:6px; }
+.month-dot     { width:6px; height:6px; border-radius:50%; background:var(--border); transition:all 0.2s; }
+.month-dot.active { background:var(--royal); transform:scale(1.25); }
 
-        /* SLOTS */
-        .slot-grid { padding: 10px 14px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .slot-btn {
-            min-height: 64px; padding: 10px 8px; border-radius: 8px; border: 1.5px solid transparent;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-            cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent;
-            font-family: 'Sarabun', sans-serif; text-align: center; user-select: none;
-        }
-        .slot-btn .slot-period { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.8; }
-        .slot-btn .slot-time   { font-size: 12px; font-weight: 700; line-height: 1.2; }
-        .slot-btn .slot-tag    { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-top: 2px; }
+/* ═══ LEGEND ═══ */
+.legend-inline { padding:8px 16px 12px; display:flex; gap:14px; flex-wrap:wrap; }
+.legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--slate); font-weight:600; }
+.legend-dot { width:10px; height:10px; border-radius:2px; border:1px solid; }
+.legend-dot.av { background:var(--green-bg); border-color:var(--green-bd); }
+.legend-dot.lt { background:var(--amber-bg); border-color:var(--amber-bd); }
+.legend-dot.fl { background:#F1F5F9; border-color:#CBD5E1; }
 
-        .slot-btn.available { background: var(--green-bg); border-color: var(--green-border); color: #14532D; }
-        .slot-btn.available .slot-tag { background: #BBF7D0; color: #15803D; }
-        .slot-btn.available:active { background: #BBF7D0; border-color: #22C55E; transform: scale(0.97); }
+/* ═══ DATE CARDS ═══ */
+.date-list { padding:0 12px 16px; display:flex; flex-direction:column; gap:10px; }
+.date-card {
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:12px; overflow:hidden;
+  transition:box-shadow 0.15s;
+}
+.date-card.has-av {
+  border-color:var(--green-bd);
+  box-shadow:0 0 0 1px var(--green-bd), 0 2px 8px rgba(22,163,74,0.06);
+}
+.date-card-header {
+  padding:12px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.date-card.has-av .date-card-header { background:#F5FDF8; border-bottom-color:var(--green-bd); }
+.date-info { display:flex; align-items:center; gap:10px; }
+.date-num { font-size:30px; font-weight:800; color:var(--ink); line-height:1; letter-spacing:-1px; }
+.date-detail .weekday   { font-size:12px; color:var(--muted); font-weight:500; }
+.date-detail .monthname { font-size:13px; font-weight:600; color:var(--ink-2); }
+.avail-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:4px 10px; border-radius:20px;
+  font-size:11px; font-weight:700; white-space:nowrap;
+}
+.avail-badge::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; }
+.avail-badge.open  { background:var(--green-bg); color:var(--green); border:1px solid var(--green-bd); }
+.avail-badge.lim   { background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-bd); }
+.avail-badge.full  { background:#F1F5F9; color:#94A3B8; border:1px solid #CBD5E1; }
 
-        .slot-btn.limited { background: var(--amber-bg); border-color: var(--amber-border); color: #78350F; }
-        .slot-btn.limited .slot-tag { background: #FDE68A; color: #92400E; }
-        .slot-btn.limited:active { background: #FDE68A; border-color: #EAB308; transform: scale(0.97); }
+/* ═══ SLOTS ═══ */
+.slot-grid { padding:10px 14px 12px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.slot-btn {
+  min-height:68px; padding:10px 8px;
+  border-radius:10px; border:1.5px solid transparent;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  cursor:pointer; transition:all 0.15s;
+  font-family:'Noto Sans Thai','Sarabun',sans-serif; text-align:center; user-select:none;
+}
+.slot-period { font-size:10px; font-weight:600; letter-spacing:0.5px; opacity:0.8; text-transform:uppercase; }
+.slot-time   { font-size:12px; font-weight:700; line-height:1.2; }
+.slot-tag    { font-size:9px; font-weight:700; padding:1px 7px; border-radius:10px; margin-top:2px; }
+.slot-btn.av { background:var(--green-bg); border-color:var(--green-bd); color:#14532D; }
+.slot-btn.av .slot-tag { background:#BBF7D0; color:var(--green); }
+.slot-btn.av:active { background:#DCFCE7; border-color:#4ADE80; transform:scale(0.97); }
+.slot-btn.lt { background:var(--amber-bg); border-color:var(--amber-bd); color:#78350F; }
+.slot-btn.lt .slot-tag { background:#FDE68A; color:var(--amber); }
+.slot-btn.lt:active { background:#FDE68A; border-color:#F59E0B; transform:scale(0.97); }
+.slot-btn.fl { background:#F1F5F9; border-color:#CBD5E1; color:#94A3B8; cursor:not-allowed; }
+.slot-btn.fl .slot-tag { background:#E2E8F0; color:#94A3B8; }
+.slot-btn.selected {
+  border-color:var(--royal) !important; background:var(--sky-light) !important;
+  color:var(--royal) !important; box-shadow:0 0 0 3px rgba(26,77,184,0.15) !important;
+}
+.slot-btn.selected .slot-tag { background:var(--sky-border) !important; color:var(--royal) !important; }
 
-        .slot-btn.full { background: var(--gray-bg); border-color: var(--gray-border); color: #94A3B8; cursor: not-allowed; }
-        .slot-btn.full .slot-tag { background: var(--border); color: #94A3B8; }
+/* ═══ PAYMENT ═══ */
+.payment-section {
+  margin:0 12px 16px;
+  background:linear-gradient(135deg,#FFFBEB,#FEF9E7);
+  border:1.5px solid var(--amber-bd); border-radius:12px; padding:14px;
+  display:flex; align-items:flex-start; gap:10px;
+}
+.payment-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.payment-body h3 { font-size:13px; font-weight:700; color:#78350F; margin-bottom:4px; }
+.payment-body p  { font-size:12px; color:#92400E; line-height:1.6; }
 
-        .slot-btn.selected {
-            border-color: var(--blue) !important; background: var(--blue-bg) !important;
-            color: #1D4ED8 !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.2) !important;
-        }
-        .slot-btn.selected .slot-tag { background: #BFDBFE !important; color: #1D4ED8 !important; }
+/* ═══ FOOTER ═══ */
+.footer {
+  background:var(--ink);
+  padding:20px 16px;
+  text-align:center;
+  border-top:3px solid var(--ink-3);
+}
+.footer-logo { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px; }
+.footer-emblem {
+  width:24px; height:24px;
+  background:linear-gradient(135deg,var(--royal),var(--sky));
+  border-radius:5px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:800; color:white;
+}
+.footer .brand   { font-size:12px; font-weight:700; color:#4A6890; letter-spacing:2px; text-transform:uppercase; }
+.footer .tagline { font-size:11px; color:#2A3850; margin-top:4px; }
+.footer .copy    { font-size:10px; color:#1A2840; margin-top:4px; }
 
-        /* STICKY */
-        .sticky-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
-            border-top: 1px solid var(--border); padding: 12px 16px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
-            z-index: 100; box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-        }
-        .sticky-bar-inner { max-width: 600px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
-        .sticky-selection { flex: 1; min-width: 0; }
-        .sticky-selection-label { font-size: 10px; color: var(--slate-light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .sticky-selection-value { font-size: 13px; font-weight: 700; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .sticky-selection-value.empty { color: var(--slate-light); font-weight: 400; font-size: 12px; }
-        .sticky-cta {
-            padding: 13px 20px; background: var(--blue); border: none; border-radius: 8px;
-            color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700;
-            cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; flex-shrink: 0;
-        }
-        .sticky-cta:disabled { background: var(--slate-light); cursor: not-allowed; opacity: 0.6; }
-        .sticky-cta:active:not(:disabled) { background: #1D4ED8; }
+/* ═══ STICKY ═══ */
+.sticky-bar {
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--white);
+  border-top:2px solid var(--border);
+  padding:12px 16px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  z-index:100;
+  box-shadow:0 -4px 20px rgba(7,20,40,0.1);
+}
+.sticky-inner { max-width:600px; margin:0 auto; display:flex; align-items:center; gap:12px; }
+.sticky-sel { flex:1; min-width:0; }
+.sticky-label { font-size:10px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+.sticky-val   { font-size:13px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+.sticky-val.empty { color:var(--muted); font-weight:400; font-size:12px; }
+.sticky-cta {
+  padding:13px 22px;
+  background:linear-gradient(135deg, var(--royal), var(--royal-2));
+  border:none; border-radius:9px; color:white;
+  font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  font-size:14px; font-weight:700; cursor:pointer;
+  white-space:nowrap; flex-shrink:0;
+  box-shadow:0 4px 14px rgba(26,77,184,0.35);
+  transition:all 0.15s; letter-spacing:0.2px;
+}
+.sticky-cta:disabled { background:#94A3B8; box-shadow:none; cursor:not-allowed; opacity:0.6; }
+.sticky-cta:active:not(:disabled) { background:var(--ink-3); transform:scale(0.98); }
 
-        /* PAYMENT */
-        .payment-section { margin: 0 12px 16px; background: var(--amber-bg); border: 1.5px solid var(--amber-border); border-radius: 10px; padding: 14px; }
-        .payment-section h3 { font-size: 13px; font-weight: 700; color: #78350F; margin-bottom: 6px; }
-        .payment-section p  { font-size: 12px; color: #92400E; line-height: 1.6; }
+/* ═══ MODAL ═══ */
+.modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(7,20,40,0.7); z-index:200;
+  align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.modal.show { display:flex; }
+.modal-sheet {
+  background:var(--white); border-radius:18px 18px 0 0; width:100%;
+  max-width:600px; max-height:96vh; overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.sheet-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:10px auto; }
+.modal-header {
+  background:linear-gradient(135deg, var(--ink), var(--ink-2));
+  padding:14px 16px 18px;
+  border-bottom:2px solid var(--royal);
+}
+.modal-header h2 { font-size:15px; font-weight:700; color:white; margin-bottom:10px; }
+.booking-chips { display:flex; gap:8px; flex-wrap:wrap; }
+.booking-chip {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+  border-radius:6px; padding:5px 10px; font-size:12px; font-weight:600; color:white;
+}
+.booking-chip span { opacity:0.6; font-weight:400; }
+.modal-body { padding:16px; }
+.form-group { margin-bottom:14px; }
+.form-label { display:block; font-size:13px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+.form-label .req { color:#DC2626; margin-left:2px; }
+.form-input {
+  width:100%; padding:12px 14px;
+  border:1.5px solid var(--border); border-radius:9px;
+  font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  font-size:16px; color:var(--ink); background:white;
+  -webkit-appearance:none; transition:all 0.15s;
+}
+.form-input:focus { outline:none; border-color:var(--royal); box-shadow:0 0 0 3px rgba(26,77,184,0.1); }
+.form-input::placeholder { color:#CBD5E1; }
+.form-input.valid { border-color:var(--green); }
+.form-input.error { border-color:#DC2626; }
+.error-msg { font-size:11px; color:#DC2626; margin-top:4px; display:none; }
+.error-msg.show { display:block; }
+.privacy-bar {
+  background:var(--teal-bg); border:1px solid var(--teal-bd);
+  border-radius:9px; padding:10px 12px; font-size:12px; color:#0F766E;
+  line-height:1.5; margin-bottom:16px; display:flex; align-items:flex-start; gap:8px;
+}
+.submit-btn {
+  width:100%; padding:14px;
+  background:linear-gradient(135deg, var(--royal), var(--royal-2));
+  border:none; border-radius:9px; color:white;
+  font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  font-size:15px; font-weight:700; cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,77,184,0.3);
+  transition:all 0.15s;
+}
+.submit-btn:active:not(:disabled) { background:var(--ink-3); transform:scale(0.99); }
+.submit-btn:disabled { opacity:0.4; cursor:not-allowed; box-shadow:none; }
+.cancel-link {
+  display:block; text-align:center; margin-top:12px;
+  font-size:13px; color:var(--muted); cursor:pointer; padding:6px;
+}
 
-        /* FOOTER */
-        .footer { background: var(--navy); padding: 16px; text-align: center; }
-        .footer .brand   { font-size: 13px; font-weight: 700; color: #CBD5E1; letter-spacing: 1px; }
-        .footer .tagline { font-size: 11px; color: #64748B; margin-top: 4px; }
+/* ═══ POPUP ═══ */
+.popup {
+  display:none; position:fixed; inset:0;
+  background:rgba(7,20,40,0.75); z-index:300;
+  align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.popup.show { display:flex; }
+.popup-sheet {
+  background:var(--white); border-radius:18px 18px 0 0;
+  width:100%; max-width:480px; max-height:92vh;
+  overflow-y:auto; -webkit-overflow-scrolling:touch;
+  padding-bottom:env(safe-area-inset-bottom);
+  animation:slideUp 0.25s ease;
+}
+@keyframes slideUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
+.popup-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:10px auto 0; }
+.popup-inner { padding:16px; }
+.popup-title { font-size:16px; font-weight:800; color:var(--ink); text-align:center; margin-bottom:4px; }
+.popup-sub   { font-size:12px; color:var(--muted); text-align:center; margin-bottom:16px; }
 
-        /* MODAL */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200; align-items: flex-end; justify-content: center; }
-        .modal.show { display: flex; }
-        .modal-sheet {
-            background: var(--white); border-radius: 16px 16px 0 0; width: 100%;
-            max-width: 600px; max-height: 96vh; overflow-y: auto;
-            -webkit-overflow-scrolling: touch; padding-bottom: env(safe-area-inset-bottom);
-        }
-        @media (min-width: 640px) {
-            .modal { align-items: center; padding: 16px; }
-            .modal-sheet { border-radius: 12px; max-height: 92vh; }
-            .sheet-handle { display: none; }
-        }
-        .sheet-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 10px auto; }
-        .modal-header { background: var(--navy); padding: 14px 16px 16px; }
-        .modal-header h2 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
-        .booking-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-        .booking-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--navy-3); border: 1px solid #475569; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; color: var(--white); }
-        .booking-chip span { opacity: 0.7; font-weight: 400; }
-        .modal-body { padding: 16px; }
-        .form-group { margin-bottom: 14px; }
-        .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
-        .form-label .req { color: #DC2626; margin-left: 2px; }
-        .form-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 16px; color: var(--navy); background: var(--white); -webkit-appearance: none; transition: border-color 0.15s, box-shadow 0.15s; }
-        .form-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
-        .form-input::placeholder { color: #94A3B8; }
-        .form-input.valid { border-color: var(--green); }
-        .form-input.error { border-color: #DC2626; }
-        .form-hint.error-msg { font-size: 11px; color: #DC2626; margin-top: 4px; display: none; }
-        .form-hint.error-msg.show { display: block; }
-        .privacy-bar { background: #F0FDF4; border: 1px solid var(--green-border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #166534; line-height: 1.5; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 8px; }
-        .privacy-bar .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-        .submit-btn { width: 100%; padding: 14px; background: var(--blue); border: none; border-radius: 8px; color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; }
-        .submit-btn:active:not(:disabled) { background: #1D4ED8; }
-        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .cancel-link { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: var(--slate-light); cursor: pointer; padding: 6px; }
+/* VERIFIED SEAL — anti-copy */
+.verified-seal {
+  background:linear-gradient(135deg, var(--ink), var(--ink-2));
+  border-radius:12px; padding:16px; text-align:center; margin-bottom:14px;
+  border:1px solid var(--ink-3); position:relative; overflow:hidden;
+}
+.verified-seal::before {
+  content:'';
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.02) 0px,
+    rgba(255,255,255,0.02) 1px,
+    transparent 1px, transparent 8px
+  );
+}
+.seal-label { font-size:10px; font-weight:700; color:#4A6890; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+.seal-ref   { font-family:monospace; font-size:22px; font-weight:900; color:#60A5FA; letter-spacing:3px; word-break:break-all; }
+.seal-time  { font-size:10px; color:#2A4060; margin-top:8px; font-family:monospace; }
 
-        /* SUCCESS enhancements */
-        .escrow-confirmed {
-            background: #F0FDF4; border: 1.5px solid var(--green-border);
-            border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .escrow-confirmed-icon { font-size: 22px; flex-shrink: 0; }
-        .escrow-confirmed-text { font-size: 12px; color: #166534; line-height: 1.5; }
-        .escrow-confirmed-text strong { display: block; font-size: 13px; margin-bottom: 2px; }
-        .success-header { text-align: center; margin-bottom: 24px; }
-        .success-check { width: 72px; height: 72px; background: var(--green-bg); border: 3px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; color: var(--green); }
-        .success-title { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
-        .success-sub   { font-size: 13px; color: var(--slate-light); }
-        .ref-hero { background: var(--navy); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 16px; }
-        .ref-label  { font-size: 11px; font-weight: 700; color: #64748B; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-        .ref-number { font-family: 'Courier New', monospace; font-size: 26px; font-weight: 900; color: #60A5FA; letter-spacing: 2px; word-break: break-all; line-height: 1.3; }
-        .ref-hint   { font-size: 11px; color: #475569; margin-top: 8px; }
-        .next-step-card { background: #EFF6FF; border: 2px solid #BFDBFE; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-        .next-step-title { font-size: 13px; font-weight: 700; color: #1D4ED8; margin-bottom: 4px; }
-        .next-step-desc  { font-size: 12px; color: #3B82F6; line-height: 1.5; margin-bottom: 14px; }
-        .copy-btn { width: 100%; padding: 13px; background: var(--blue); border: none; border-radius: 8px; color: var(--white); font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .copy-btn:active { background: #1D4ED8; }
-        .copy-btn.copied { background: var(--green); }
-        .msg-toggle-btn { width: 100%; padding: 10px; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--slate); font-family: 'Sarabun', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; }
-        .msg-box-wrap { display: none; margin-top: 8px; }
-        .msg-box-wrap.open { display: block; }
-        .msg-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 11px; color: var(--navy); line-height: 1.7; white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', monospace; max-height: 180px; overflow-y: auto; }
-        .summary-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
-        .summary-title { font-size: 12px; font-weight: 700; color: var(--slate); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
-        .summary-row { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .summary-row:last-child { border-bottom: none; }
-        .summary-key { color: var(--slate-light); font-weight: 500; min-width: 72px; flex-shrink: 0; }
-        .summary-val { color: var(--navy); font-weight: 600; word-break: break-word; }
-        .action-row { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 24px; }
-        .action-btn { padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--white); font-family: 'Sarabun', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy-2); cursor: pointer; text-align: center; text-decoration: none; display: block; }
-        .action-btn:active { background: var(--bg); }
-        .success-footer { text-align: center; padding: 16px 0; border-top: 1px solid var(--border); }
-        .success-footer .brand   { font-size: 12px; font-weight: 700; color: var(--navy-2); letter-spacing: 1px; }
-        .success-footer .tagline { font-size: 11px; color: var(--slate-light); margin-top: 2px; }
+.popup-rows { background:white; border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:14px; }
+.popup-row  { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-bottom:1px solid var(--border); font-size:13px; }
+.popup-row:last-child { border-bottom:none; }
+.popup-row-icon { font-size:15px; flex-shrink:0; width:20px; text-align:center; margin-top:1px; }
+.popup-row-val  { color:var(--ink); font-weight:600; line-height:1.4; word-break:break-word; }
+.popup-copy-btn {
+  width:100%; padding:14px;
+  background:linear-gradient(135deg,#16A34A,#15803D);
+  border:none; border-radius:9px; color:white;
+  font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  font-size:15px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:8px;
+  box-shadow:0 4px 12px rgba(22,163,74,0.25);
+  transition:all 0.15s;
+}
+.popup-copy-btn:active { background:#166534; transform:scale(0.99); }
+.popup-copy-btn.copied { background:#166534; }
+.popup-close-btn {
+  width:100%; padding:12px; background:none;
+  border:1.5px solid var(--border); border-radius:9px;
+  color:var(--slate); font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  font-size:14px; font-weight:600; cursor:pointer;
+}
+.popup-close-btn:active { background:var(--bg); }
 
-        /* SUCCESS PAGE WRAPPER */
-        .success-page { padding: 20px 16px; max-width: 600px; margin: 0 auto; }
+/* ═══ SUCCESS PAGE ═══ */
+.page-main    { display:block; padding-bottom:84px; }
+.page-main.hidden { display:none; }
+.page-success { display:none; min-height:100vh; background:var(--bg); }
+.page-success.show { display:block; }
+.success-page { padding:20px 16px; max-width:600px; margin:0 auto; }
 
-        /* SUMMARY POPUP */
-        .popup { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 300; align-items: flex-end; justify-content: center; }
-        .popup.show { display: flex; }
-        @media (min-width: 640px) {
-            .popup { align-items: center; padding: 16px; }
-            .popup-sheet { border-radius: 12px !important; }
-        }
-        .popup-sheet {
-            background: var(--white); border-radius: 16px 16px 0 0;
-            width: 100%; max-width: 480px; max-height: 92vh;
-            overflow-y: auto; -webkit-overflow-scrolling: touch;
-            padding-bottom: env(safe-area-inset-bottom);
-            animation: slideUp 0.25s ease;
-        }
-        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .popup-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 10px auto 0; }
-        .popup-inner { padding: 16px; }
-        .popup-title { font-size: 16px; font-weight: 800; color: var(--navy); text-align: center; margin-bottom: 4px; }
-        .popup-sub   { font-size: 12px; color: var(--slate-light); text-align: center; margin-bottom: 16px; }
-        .popup-ref-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; text-align: center; margin-bottom: 14px; }
-        .popup-ref-label { font-size: 10px; color: var(--slate-light); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-        .popup-ref-num   { font-family: "Courier New", monospace; font-size: 15px; font-weight: 900; color: var(--navy); letter-spacing: 1px; }
-        .popup-rows { background: var(--white); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
-        .popup-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .popup-row:last-child { border-bottom: none; }
-        .popup-row-icon { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; margin-top: 1px; }
-        .popup-row-val  { color: var(--navy); font-weight: 600; line-height: 1.4; word-break: break-word; }
-        .popup-copy-btn { width: 100%; padding: 14px; background: var(--green); border: none; border-radius: 8px; color: var(--white); font-family: "Sarabun", sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
-        .popup-copy-btn:active { background: #15803D; }
-        .popup-copy-btn.copied { background: #166534; }
-        .popup-close-btn { width: 100%; padding: 12px; background: none; border: 1.5px solid var(--border); border-radius: 8px; color: var(--slate); font-family: "Sarabun", sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .popup-close-btn:active { background: var(--bg); }
+.success-header { text-align:center; margin-bottom:24px; }
+.success-check {
+  width:72px; height:72px;
+  background:var(--green-bg); border:3px solid var(--green-bd);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  margin:0 auto 14px; font-size:32px; color:var(--green);
+}
+.success-title { font-size:22px; font-weight:800; color:var(--ink); margin-bottom:4px; }
+.success-sub   { font-size:13px; color:var(--muted); }
 
-        @media (min-width: 640px) {
-            .date-list { padding: 0 20px 20px; }
-            .legend-inline { padding: 8px 20px 14px; }
-            .payment-section { margin: 0 20px 20px; }
-            .slot-btn { min-height: 70px; }
-        }
-        @media (min-width: 1024px) {
-            .header { padding: 28px 32px 24px; }
-            .date-list { padding: 0 32px 24px; }
-            .legend-inline { padding: 8px 32px 16px; }
-            .payment-section { margin: 0 32px 24px; }
-            .date-num { font-size: 32px; }
-            .slot-btn { min-height: 76px; }
-        }
-    </style>
+.escrow-confirmed {
+  background:var(--green-bg); border:1.5px solid var(--green-bd);
+  border-radius:12px; padding:12px 14px; margin-bottom:16px;
+  display:flex; align-items:center; gap:10px;
+}
+.escrow-confirmed-icon { font-size:22px; flex-shrink:0; }
+.escrow-confirmed-text { font-size:12px; color:#166534; line-height:1.5; }
+.escrow-confirmed-text strong { display:block; font-size:13px; margin-bottom:2px; }
+
+/* REF HERO — verified design */
+.ref-hero {
+  background:linear-gradient(160deg, var(--ink) 0%, var(--ink-2) 100%);
+  border-radius:14px; padding:20px; text-align:center; margin-bottom:16px;
+  position:relative; overflow:hidden;
+  border:1px solid var(--ink-3);
+}
+.ref-hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px,
+    transparent 1px, transparent 40px
+  );
+}
+.ref-verified {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(26,77,184,0.2); border:1px solid rgba(59,130,246,0.3);
+  border-radius:4px; padding:3px 10px; margin-bottom:10px;
+  font-size:9px; font-weight:700; color:#60A5FA; letter-spacing:1px; text-transform:uppercase;
+}
+.ref-label  { font-size:10px; font-weight:700; color:#4A6890; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+.ref-number { font-family:monospace; font-size:24px; font-weight:900; color:#60A5FA; letter-spacing:3px; word-break:break-all; line-height:1.3; }
+.ref-timestamp { font-size:10px; color:#2A4060; margin-top:8px; font-family:monospace; }
+.ref-hint   { font-size:11px; color:#2A4060; margin-top:6px; }
+
+.next-step-card {
+  background:var(--sky-light); border:2px solid var(--sky-border);
+  border-radius:12px; padding:16px; margin-bottom:16px;
+}
+.next-step-title { font-size:13px; font-weight:700; color:var(--royal); margin-bottom:4px; }
+.next-step-desc  { font-size:12px; color:var(--sky); line-height:1.5; margin-bottom:14px; }
+.copy-btn {
+  width:100%; padding:13px;
+  background:linear-gradient(135deg,var(--royal),var(--royal-2));
+  border:none; border-radius:9px; color:white;
+  font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  font-size:14px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  box-shadow:0 4px 14px rgba(26,77,184,0.25);
+  transition:all 0.15s;
+}
+.copy-btn:active { background:var(--ink-3); }
+.copy-btn.copied { background:var(--green); }
+
+.line-send-btn {
+  width:100%; padding:13px;
+  background:#06C755; border:none; border-radius:9px;
+  color:white; font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  font-size:14px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px; margin-top:8px;
+  transition:all 0.15s;
+}
+.line-send-btn:active { background:#05A847; }
+
+.summary-card { background:white; border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:16px; }
+.summary-title { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; }
+.summary-row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.summary-row:last-child { border-bottom:none; }
+.summary-key { color:var(--muted); font-weight:500; min-width:72px; flex-shrink:0; }
+.summary-val { color:var(--ink); font-weight:600; word-break:break-word; }
+
+.action-row { display:grid; grid-template-columns:1fr; gap:8px; margin-bottom:24px; }
+.action-btn {
+  padding:12px; border:1.5px solid var(--border); border-radius:9px;
+  background:white; font-family:'Noto Sans Thai','Sarabun',sans-serif;
+  font-size:13px; font-weight:700; color:var(--ink-2); cursor:pointer; text-align:center;
+}
+.action-btn:active { background:var(--bg); }
+
+.success-footer { text-align:center; padding:16px 0; border-top:1px solid var(--border); }
+.success-footer .brand   { font-size:12px; font-weight:700; color:var(--ink-2); letter-spacing:1.5px; text-transform:uppercase; }
+.success-footer .tagline { font-size:11px; color:var(--muted); margin-top:2px; }
+
+@media(min-width:640px){
+  .modal { align-items:center; padding:16px; }
+  .modal-sheet { border-radius:14px; max-height:92vh; }
+  .popup { align-items:center; padding:16px; }
+  .popup-sheet { border-radius:14px; }
+  .sheet-handle { display:none; }
+}
+</style>
 </head>
 <body>
 
+<!-- ═══ MAIN PAGE ═══ -->
 <div class="page-main" id="pageMain">
 
-    <div class="header">
-        <div class="header-top">
-            <span class="brand-tag">K2PS Marketplace</span>
-            <span class="escrow-badge">Escrow ปลอดภัย</span>
+  <div class="header">
+    <div class="header-accent"></div>
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="brand-block">
+          <div class="brand-emblem">K2</div>
+          <div class="brand-text">
+            <span class="brand-name">K2PS Marketplace</span>
+            <span class="brand-sub">Official Booking System</span>
+          </div>
         </div>
-        <h1>นัดหมายเข้ารับสินค้า</h1>
-        <p class="subtitle">เลือกเดือนและรอบเวลาที่สะดวก</p>
+        <div class="escrow-seal"><div class="dot"></div>Escrow ปลอดภัย</div>
+      </div>
+      <h1>นัดหมายเข้ารับสินค้า</h1>
+      <div class="header-sub">เลือกเดือนและรอบเวลาที่สะดวก</div>
     </div>
+    <div class="live-bar">
+      <div class="live-left">
+        <div class="live-dot"></div>
+        <span class="live-label">ระบบทำงานอยู่</span>
+        <span class="live-time" id="liveTime">--:--:--</span>
+      </div>
+      <span class="session-id" id="sessionId">SESSION: ------</span>
+    </div>
+  </div>
 
-    <!-- TRUST STRIP -->
-    <div class="trust-strip">
-        <span class="trust-item">ระบบ Escrow คุ้มครองเงิน</span>
-        <span class="trust-sep">·</span>
-        <span class="trust-item">ได้รับเงินก่อนส่งสินค้า</span>
-        <span class="trust-sep">·</span>
-        <span class="trust-item">ยืนยันตัวตนทุกรายการ</span>
-    </div>
+  <div class="trust-strip">
+    <span class="trust-item"><span class="trust-icon">✓</span>ระบบ Escrow คุ้มครองเงิน</span>
+    <span class="trust-sep">·</span>
+    <span class="trust-item"><span class="trust-icon">✓</span>ได้รับเงินก่อนส่งสินค้า</span>
+    <span class="trust-sep">·</span>
+    <span class="trust-item"><span class="trust-icon">✓</span>ยืนยันตัวตนทุกรายการ</span>
+  </div>
 
-    <!-- STEP BAR -->
-    <div class="step-bar" id="stepBar">
-        <div class="step-item">
-            <div class="step-num active" id="s1">1</div>
-            <span class="step-lbl active" id="sl1">เลือกรอบ</span>
-        </div>
-        <div class="step-line" id="line1"></div>
-        <div class="step-item">
-            <div class="step-num" id="s2">2</div>
-            <span class="step-lbl" id="sl2">กรอกข้อมูล</span>
-        </div>
-        <div class="step-line" id="line2"></div>
-        <div class="step-item">
-            <div class="step-num" id="s3">3</div>
-            <span class="step-lbl" id="sl3">เสร็จสิ้น</span>
-        </div>
-    </div>
+  <div class="step-bar" id="stepBar">
+    <div class="step-item"><div class="step-num active" id="s1">1</div><span class="step-lbl active" id="sl1">เลือกรอบ</span></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step-item"><div class="step-num" id="s2">2</div><span class="step-lbl" id="sl2">กรอกข้อมูล</span></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step-item"><div class="step-num" id="s3">3</div><span class="step-lbl" id="sl3">เสร็จสิ้น</span></div>
+  </div>
 
-    <div class="notice-bar">
-        <span style="font-size:16px;flex-shrink:0">💰</span>
-        <span class="notice-text">ผู้ซื้อชำระเงินแล้ว · เงินดูแลโดย Escrow · ผู้ขายรับเงินก่อนเข้ารับสินค้า</span>
-    </div>
+  <div class="notice-bar">
+    <div class="notice-chip">💰</div>
+    <span class="notice-text">ผู้ซื้อชำระเงินแล้ว · เงินดูแลโดย Escrow · ผู้ขายรับเงินก่อนเข้ารับสินค้า</span>
+  </div>
 
-    <!-- MONTH NAV -->
-    <div class="month-nav">
-        <button class="month-arrow disabled" id="prevBtn" onclick="switchMonth(-1)">‹</button>
-        <div class="month-center">
-            <span class="month-label" id="monthLabel">มีนาคม 2569</span>
-            <span class="month-sublabel" id="monthMeta">กำลังโหลด...</span>
-            <div class="month-dots" id="monthDots">
-                <div class="month-dot active" id="dot0"></div>
-                <div class="month-dot" id="dot1"></div>
-            </div>
-        </div>
-        <button class="month-arrow" id="nextBtn" onclick="switchMonth(1)">›</button>
+  <div class="month-nav">
+    <button class="month-arrow disabled" id="prevBtn" style="visibility:hidden">‹</button>
+    <div class="month-center">
+      <span class="month-label" id="monthLabel">มีนาคม 2569</span>
+      <span class="month-meta" id="monthMeta">กำลังโหลด...</span>
     </div>
+    <button class="month-arrow disabled" id="nextBtn" style="visibility:hidden">›</button>
+  </div>
 
-    <div class="legend-inline">
-        <div class="legend-item"><div class="legend-dot available"></div>ว่าง</div>
-        <div class="legend-item"><div class="legend-dot limited"></div>เหลือน้อย</div>
-        <div class="legend-item"><div class="legend-dot full"></div>เต็ม</div>
-    </div>
+  <div class="legend-inline">
+    <div class="legend-item"><div class="legend-dot av"></div>ว่าง</div>
+    <div class="legend-item"><div class="legend-dot lt"></div>เหลือน้อย</div>
+    <div class="legend-item"><div class="legend-dot fl"></div>เต็ม</div>
+  </div>
 
-    <!-- PANEL 0: มีนาคม -->
-    <div class="month-panel active" id="panel-0">
-        <div class="date-list" id="marchList"></div>
-    </div>
+  <div class="month-panel active" id="panel-0">
+    <div class="date-list" id="marchList"></div>
+  </div>
 
-    <!-- PANEL 1: เมษายน -->
-    <div class="month-panel" id="panel-1">
-        <div class="date-list" id="aprilList"></div>
+  <div class="payment-section">
+    <div class="payment-icon">🔒</div>
+    <div class="payment-body">
+      <h3>เงื่อนไขการรับเงิน</h3>
+      <p>เงินถูกดูแลใน Escrow เรียบร้อยแล้ว · ผู้ขายได้รับเงินเต็มจำนวนก่อนเข้ารับสินค้า · สมาชิกใหม่ต้องผ่านการยืนยันตัวตนครั้งแรก</p>
     </div>
+  </div>
 
-    <div class="payment-section">
-        <h3>🔒 เงื่อนไขการรับเงิน</h3>
-        <p>เงินถูกดูแลใน Escrow เรียบร้อยแล้ว · ผู้ขายได้รับเงินเต็มจำนวนก่อนเข้ารับสินค้า · สมาชิกใหม่ต้องผ่านการยืนยันตัวตนครั้งแรก</p>
+  <div class="footer">
+    <div class="footer-logo">
+      <div class="footer-emblem">K2</div>
+      <span class="brand" style="font-size:13px;">K2PS MARKETPLACE</span>
     </div>
-
-    <div class="footer">
-        <div class="brand">K2PS MARKETPLACE</div>
-        <div class="tagline">ระบบ Escrow และนัดรับสินค้าที่ปลอดภัย</div>
-        <div class="tagline" style="margin-top:4px;font-size:10px;color:#64748B;">© 2026 K2PS MARKETPLACE. All rights reserved.</div>
-    </div>
+    <div class="tagline">ระบบ Escrow และนัดรับสินค้าที่ปลอดภัย</div>
+    <div class="copy">© 2026 K2PS MARKETPLACE. All rights reserved.</div>
+  </div>
 </div>
 
 <!-- STICKY -->
 <div class="sticky-bar" id="stickyBar">
-    <div class="sticky-bar-inner">
-        <div class="sticky-selection">
-            <div class="sticky-selection-label">รอบที่เลือก</div>
-            <div class="sticky-selection-value empty" id="stickyText">ยังไม่ได้เลือกรอบ</div>
-        </div>
-        <button class="sticky-cta" id="stickyCta" disabled onclick="openModal()">ยืนยันนัดหมาย</button>
+  <div class="sticky-inner">
+    <div class="sticky-sel">
+      <div class="sticky-label">รอบที่เลือก</div>
+      <div class="sticky-val empty" id="stickyText">ยังไม่ได้เลือกรอบ</div>
     </div>
+    <button class="sticky-cta" id="stickyCta" disabled onclick="openModal()">ยืนยันนัดหมาย</button>
+  </div>
 </div>
 
-<!-- SUMMARY POPUP -->
+<!-- POPUP -->
 <div class="popup" id="summaryPopup">
-    <div class="popup-sheet">
-        <div class="popup-handle"></div>
-        <div class="popup-inner">
-            <div class="popup-title">บันทึกข้อมูลเข้ารับสินค้าเรียบร้อยแล้ว</div>
-            <div class="popup-sub">รหัสเข้ารับสินค้าของคุณคือ</div>
-            <div class="popup-ref-box">
-                <div class="popup-ref-label">รหัสนัดรับสินค้า</div>
-                <div class="popup-ref-num" id="popupRef">—</div>
-            </div>
-            <div class="popup-rows">
-                <div class="popup-row"><span class="popup-row-icon">📅</span><span class="popup-row-val" id="popupDate">—</span></div>
-                <div class="popup-row"><span class="popup-row-icon">⏰</span><span class="popup-row-val" id="popupTime">—</span></div>
-                <div class="popup-row"><span class="popup-row-icon">👤</span><span class="popup-row-val" id="popupName">—</span></div>
-                <div class="popup-row"><span class="popup-row-icon">📞</span><span class="popup-row-val" id="popupPhone">—</span></div>
-                <div class="popup-row"><span class="popup-row-icon">📍</span><span class="popup-row-val" id="popupAddr">—</span></div>
-                <div class="popup-row" id="popupNoteRow" style="display:none"><span class="popup-row-icon">📝</span><span class="popup-row-val" id="popupNote">—</span></div>
-            </div>
-            <button class="popup-copy-btn" id="popupCopyBtn" onclick="popupCopy()"><span id="popupCopyText">📋 คัดลอกข้อความ</span></button>
-            <button class="popup-close-btn" onclick="closePopup()">ปิดหน้าต่าง</button>
-        </div>
+  <div class="popup-sheet">
+    <div class="popup-handle"></div>
+    <div class="popup-inner">
+      <div class="popup-title">บันทึกข้อมูลเรียบร้อยแล้ว</div>
+      <div class="popup-sub">รหัสเข้ารับสินค้าของคุณคือ</div>
+      <div class="verified-seal">
+        <div class="seal-label">รหัสนัดรับสินค้า</div>
+        <div class="seal-ref" id="popupRef">—</div>
+        <div class="seal-time" id="popupSealTime">—</div>
+      </div>
+      <div class="popup-rows">
+        <div class="popup-row"><span class="popup-row-icon">📅</span><span class="popup-row-val" id="popupDate">—</span></div>
+        <div class="popup-row"><span class="popup-row-icon">⏰</span><span class="popup-row-val" id="popupTime">—</span></div>
+        <div class="popup-row"><span class="popup-row-icon">👤</span><span class="popup-row-val" id="popupName">—</span></div>
+        <div class="popup-row"><span class="popup-row-icon">📞</span><span class="popup-row-val" id="popupPhone">—</span></div>
+        <div class="popup-row"><span class="popup-row-icon">📍</span><span class="popup-row-val" id="popupAddr">—</span></div>
+        <div class="popup-row" id="popupNoteRow" style="display:none"><span class="popup-row-icon">📝</span><span class="popup-row-val" id="popupNote">—</span></div>
+      </div>
+      <button class="popup-copy-btn" id="popupCopyBtn" onclick="popupCopy()"><span id="popupCopyText">📋 คัดลอกข้อความ</span></button>
+      <button class="popup-close-btn" onclick="closePopup()">ปิดหน้าต่าง</button>
     </div>
+  </div>
 </div>
-
 
 <!-- MODAL -->
 <div class="modal" id="modal">
-    <div class="modal-sheet">
-        <div class="sheet-handle"></div>
-        <div class="modal-header">
-            <h2>กรอกข้อมูลเข้ารับสินค้า</h2>
-            <div class="booking-chips">
-                <div class="booking-chip"><span>วันที่</span> <span id="chipDate">—</span></div>
-                <div class="booking-chip"><span>เวลา</span>  <span id="chipTime">—</span></div>
-            </div>
-        </div>
-        <div class="modal-body">
-            <form id="bookingForm" onsubmit="submitForm(event)" novalidate>
-                <div class="form-group">
-                    <label class="form-label">ชื่อ-นามสกุล <span class="req">*</span></label>
-                    <input type="text" class="form-input" id="name" placeholder="กรอกชื่อ-นามสกุล" autocomplete="name" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">เบอร์โทรศัพท์ <span class="req">*</span></label>
-                    <input type="tel" class="form-input" id="phone" placeholder="08x-xxx-xxxx" autocomplete="tel" inputmode="tel" maxlength="12" required>
-                    <div class="form-hint error-msg" id="phoneErr">รูปแบบเบอร์โทรไม่ถูกต้อง</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">ที่อยู่เข้ารับสินค้า <span class="req">*</span></label>
-                    <input type="text" class="form-input" id="addr" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ" autocomplete="street-address" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">หมายเหตุ</label>
-                    <input type="text" class="form-input" id="note" placeholder="เช่น โปรดโทรล่วงหน้า 30 นาที">
-                </div>
-                <div class="privacy-bar">
-                    <span class="icon">🔒</span>
-                    <span>ข้อมูลถูกเข้ารหัสและใช้เพื่อการจัดส่งเท่านั้น</span>
-                </div>
-                <button type="submit" class="submit-btn" id="submitBtn" disabled>ยืนยันข้อมูลการนัดหมาย</button>
-                <span class="cancel-link" onclick="closeModal()">ยกเลิก / เลือกรอบใหม่</span>
-            </form>
-        </div>
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="modal-header">
+      <h2>กรอกข้อมูลเข้ารับสินค้า</h2>
+      <div class="booking-chips">
+        <div class="booking-chip"><span>วันที่</span><span id="chipDate">—</span></div>
+        <div class="booking-chip"><span>เวลา</span><span id="chipTime">—</span></div>
+      </div>
     </div>
+    <div class="modal-body">
+      <form id="bookingForm" onsubmit="submitForm(event)" novalidate>
+        <div class="form-group">
+          <label class="form-label">ชื่อ-นามสกุล <span class="req">*</span></label>
+          <input type="text" class="form-input" id="name" placeholder="กรอกชื่อ-นามสกุล" autocomplete="name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">เบอร์โทรศัพท์ <span class="req">*</span></label>
+          <input type="tel" class="form-input" id="phone" placeholder="08x-xxx-xxxx" autocomplete="tel" inputmode="tel" maxlength="12" required>
+          <div class="error-msg" id="phoneErr">รูปแบบเบอร์โทรไม่ถูกต้อง</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ที่อยู่เข้ารับสินค้า <span class="req">*</span></label>
+          <input type="text" class="form-input" id="addr" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ" autocomplete="street-address" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">หมายเหตุ</label>
+          <input type="text" class="form-input" id="note" placeholder="เช่น โปรดโทรล่วงหน้า 30 นาที">
+        </div>
+        <div class="privacy-bar">
+          <span>🔒</span>
+          <span>ข้อมูลถูกเข้ารหัสและใช้เพื่อการจัดส่งเท่านั้น</span>
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn" disabled>ยืนยันข้อมูลการนัดหมาย</button>
+        <span class="cancel-link" onclick="closeModal()">ยกเลิก / เลือกรอบใหม่</span>
+      </form>
+    </div>
+  </div>
 </div>
 
 <!-- SUCCESS PAGE -->
 <div class="page-success" id="pageSuccess">
-    <div class="success-page">
-        <div class="success-header">
-            <div class="success-check">✓</div>
-            <div class="success-title">บันทึกนัดหมายสำเร็จ</div>
-            <div class="success-sub">เจ้าหน้าที่จะยืนยันภายใน 30 นาที</div>
-        </div>
-
-        <!-- แสดงเฉพาะเมื่อ Google Sheets บันทึกไม่สำเร็จ -->
-        <div id="saveWarning" style="display:none; background:#FEF3C7; border:1.5px solid #FCD34D; border-radius:10px; padding:12px 14px; margin-bottom:16px; align-items:center; gap:10px;"><span style="font-size:18px;flex-shrink:0">⚠️</span><span style="font-size:12px;color:#92400E;line-height:1.5;">บันทึกในระบบยังไม่สำเร็จ · กรุณาคัดลอกข้อมูลด้านล่างแล้วแจ้งแอดมินโดยตรง</span></div>
-
-        <div class="escrow-confirmed">
-            <div class="escrow-confirmed-icon">🔒</div>
-            <div class="escrow-confirmed-text">
-                <strong>เงินของคุณปลอดภัย</strong>
-                ระบบ Escrow ดูแลเงินทุกบาท · ผู้ขายได้รับเงินเต็มจำนวนก่อนเจ้าหน้าที่เข้ารับสินค้า
-            </div>
-        </div>
-
-        <div class="ref-hero">
-            <div class="ref-label">รหัสนัดรับสินค้า</div>
-            <div class="ref-number" id="refNum">—</div>
-            <div class="ref-hint">เก็บรหัสนี้ไว้อ้างอิงกับเจ้าหน้าที่</div>
-        </div>
-
-        <!-- COPY MESSAGE SECTION -->
-        <div class="next-step-card">
-            <div class="next-step-title">📋 คัดลอกข้อมูลเพื่อแจ้งแอดมิน</div>
-            <div class="next-step-desc">กดปุ่มด้านล่างเพื่อคัดลอกข้อมูลนัดหมาย แล้วส่งให้แอดมินผ่านช่องทางที่ต้องการ</div>
-            <button class="copy-btn" id="copyBtn" onclick="copyMessage()"><span id="copyText">📋 คัดลอกข้อมูลนัดหมาย</span></button>
-            <button class="msg-toggle-btn" onclick="toggleMsg(this)"><span>▼ ดูข้อความที่จะคัดลอก</span></button>
-            <div class="msg-box-wrap" id="msgBoxWrap"><div class="msg-box" id="msgBox"></div></div>
-        </div>
-
-        <div class="summary-card">
-            <div class="summary-title">สรุปข้อมูลการนัดหมาย</div>
-            <div class="summary-row"><span class="summary-key">วันที่</span><span class="summary-val" id="sumDate">—</span></div>
-            <div class="summary-row"><span class="summary-key">เวลา</span><span class="summary-val" id="sumTime">—</span></div>
-            <div class="summary-row"><span class="summary-key">ชื่อ</span><span class="summary-val" id="sumName">—</span></div>
-            <div class="summary-row"><span class="summary-key">เบอร์</span><span class="summary-val" id="sumPhone">—</span></div>
-            <div class="summary-row"><span class="summary-key">ที่อยู่</span><span class="summary-val" id="sumAddr">—</span></div>
-            <div class="summary-row" id="sumNoteRow" style="display:none"><span class="summary-key">หมายเหตุ</span><span class="summary-val" id="sumNote">—</span></div>
-        </div>
-
-        <div class="action-row">
-            <button class="action-btn" onclick="bookNew()">🔄 จองรอบใหม่</button>
-        </div>
-
-        <div class="success-footer">
-            <div class="brand">K2PS MARKETPLACE</div>
-            <div class="tagline">ระบบ Escrow และนัดรับสินค้าที่ปลอดภัย</div>
-            <div class="tagline" style="margin-top:4px;font-size:10px;color:#64748B;">© 2026 K2PS MARKETPLACE. All rights reserved.</div>
-        </div>
+  <div class="success-page">
+    <div class="success-header">
+      <div class="success-check">✓</div>
+      <div class="success-title">บันทึกนัดหมายสำเร็จ</div>
+      <div class="success-sub">เจ้าหน้าที่จะยืนยันภายใน 30 นาที</div>
     </div>
+    <div id="saveWarning" style="display:none;background:#FEF3C7;border:1.5px solid #FCD34D;border-radius:10px;padding:12px 14px;margin-bottom:16px;align-items:center;gap:10px;">
+      <span style="font-size:18px;flex-shrink:0">⚠️</span>
+      <span style="font-size:12px;color:#92400E;line-height:1.5;">บันทึกในระบบยังไม่สำเร็จ · กรุณาคัดลอกข้อมูลด้านล่างแล้วแจ้งแอดมินโดยตรง</span>
+    </div>
+    <div class="escrow-confirmed">
+      <div class="escrow-confirmed-icon">🔒</div>
+      <div class="escrow-confirmed-text">
+        <strong>เงินของคุณปลอดภัย</strong>
+        ระบบ Escrow ดูแลเงินทุกบาท · ผู้ขายได้รับเงินเต็มจำนวนก่อนเจ้าหน้าที่เข้ารับสินค้า
+      </div>
+    </div>
+    <div class="ref-hero">
+      <div class="ref-verified">✓ VERIFIED BOOKING</div>
+      <div class="ref-label">รหัสนัดรับสินค้า</div>
+      <div class="ref-number" id="refNum">—</div>
+      <div class="ref-timestamp" id="refTimestamp">—</div>
+      <div class="ref-hint">เก็บรหัสนี้ไว้อ้างอิงกับเจ้าหน้าที่</div>
+    </div>
+    <div class="next-step-card">
+      <div class="next-step-title">📋 แจ้งข้อมูลให้แอดมิน</div>
+      <div class="next-step-desc">กดปุ่มด้านล่างเพื่อส่งข้อมูลนัดหมายให้แอดมินโดยตรง</div>
+      <button class="line-send-btn" id="lineSendBtn" onclick="sendToLine()"><span>💬 ส่งข้อมูลให้แอดมินใน LINE</span></button>
+      <button class="copy-btn" id="copyBtn" onclick="copyMessage()" style="margin-top:8px;"><span id="copyText">📋 คัดลอกข้อมูล (สำรอง)</span></button>
+    </div>
+    <div class="summary-card">
+      <div class="summary-title">สรุปข้อมูลการนัดหมาย</div>
+      <div class="summary-row"><span class="summary-key">วันที่</span><span class="summary-val" id="sumDate">—</span></div>
+      <div class="summary-row"><span class="summary-key">เวลา</span><span class="summary-val" id="sumTime">—</span></div>
+      <div class="summary-row"><span class="summary-key">ชื่อ</span><span class="summary-val" id="sumName">—</span></div>
+      <div class="summary-row"><span class="summary-key">เบอร์</span><span class="summary-val" id="sumPhone">—</span></div>
+      <div class="summary-row"><span class="summary-key">ที่อยู่</span><span class="summary-val" id="sumAddr">—</span></div>
+      <div class="summary-row" id="sumNoteRow" style="display:none"><span class="summary-key">หมายเหตุ</span><span class="summary-val" id="sumNote">—</span></div>
+    </div>
+    <div class="action-row">
+      <button class="action-btn" onclick="bookNew()">🔄 จองรอบใหม่</button>
+    </div>
+    <div class="success-footer">
+      <div class="brand">K2PS MARKETPLACE</div>
+      <div class="tagline">ระบบ Escrow และนัดรับสินค้าที่ปลอดภัย · © 2026</div>
+    </div>
+  </div>
 </div>
+
+<style>
+.month-panel { display:none; }
+.month-panel.active { display:block; }
+</style>
 
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRfoSC-qB9LoLb9y2IdMwInSXZ07f_fbCCzUPv5R8QJDsdVn_2p3KDY5mRbIF3XA8-Kw/exec';
 
-// ═══════════════════════════════════════════════════
-// ⚙️ DATA CONFIG — แก้ตรงนี้อย่างเดียว
-// ═══════════════════════════════════════════════════
+// ── LIVE CLOCK + SESSION ID ──
+function updateClock() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('th-TH',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('liveTime').textContent = t;
+}
+setInterval(updateClock, 1000); updateClock();
 
+// Session ID — changes every page load, hard to fake
+const SESSION_ID = Date.now().toString(36).toUpperCase().slice(-6);
+document.getElementById('sessionId').textContent = 'SESSION: ' + SESSION_ID;
+
+// ── DATA ──
 const MARCH_DATA = {
-    5:  { am:'a', pm:'l' },
-    6:  { am:'l', pm:'l' },
-    7:  { am:'a', pm:'a' },
-    8:  { am:'l', pm:'a' },
-    9:  { am:'a', pm:'a' },
-    10: { am:'a', pm:'l' },
-    11: { am:'l', pm:'a' },
-    12: { am:'a', pm:'a' },
-    13: { am:'a', pm:'a' },
-    14: { am:'a', pm:'l' },
-    15: { am:'l', pm:'l' },
-    16: { am:'a', pm:'a' },
-    17: { am:'l', pm:'a' },
-    18: { am:'a', pm:'l' },
-    19: { am:'a', pm:'a' },
-    20: { am:'l', pm:'a' },
-    21: { am:'a', pm:'a' },
-    22: { am:'l', pm:'l' },
-    23: { am:'a', pm:'l' },
-    24: { am:'a', pm:'a' },
-    25: { am:'l', pm:'a' },
-    26: { am:'a', pm:'l' },
-    27: { am:'a', pm:'a' },
-    28: { am:'a', pm:'l' },
-    29: { am:'l', pm:'a' },
-    30: { am:'a', pm:'a' },
-    31: { am:'l', pm:'l' }
+  6:{am:'l',pm:'l',weekday:'พฤหัสบดี'},
+  7:{am:'a',pm:'f',weekday:'ศุกร์'},
+  8:{am:'l',pm:'a',weekday:'เสาร์'},
+  9:{am:'a',pm:'a',weekday:'อาทิตย์'},10:{am:'a',pm:'l',weekday:'จันทร์'},
+  11:{am:'l',pm:'a',weekday:'อังคาร'},12:{am:'a',pm:'a',weekday:'พุธ'},
+  13:{am:'f',pm:'a',weekday:'พฤหัสบดี'},14:{am:'a',pm:'l',weekday:'ศุกร์'},
+  15:{am:'l',pm:'l',weekday:'เสาร์'},16:{am:'a',pm:'a',weekday:'อาทิตย์'},
+  17:{am:'l',pm:'a',weekday:'จันทร์'},18:{am:'a',pm:'l',weekday:'อังคาร'},
+  19:{am:'a',pm:'a',weekday:'พุธ'},20:{am:'l',pm:'f',weekday:'พฤหัสบดี'},
+  21:{am:'a',pm:'a',weekday:'ศุกร์'},22:{am:'l',pm:'l',weekday:'เสาร์'},
+  23:{am:'a',pm:'l',weekday:'อาทิตย์'},24:{am:'a',pm:'a',weekday:'จันทร์'},
+  25:{am:'l',pm:'a',weekday:'อังคาร'},26:{am:'a',pm:'l',weekday:'พุธ'},
+  27:{am:'f',pm:'a',weekday:'พฤหัสบดี'},28:{am:'a',pm:'l',weekday:'ศุกร์'},
+  29:{am:'l',pm:'a',weekday:'เสาร์'},30:{am:'a',pm:'a',weekday:'อาทิตย์'},
+  31:{am:'l',pm:'l',weekday:'จันทร์'}
 };
 
-const APRIL_DATA = {
-    1:  { am:'a', pm:'a' },
-    2:  { am:'a', pm:'l' },
-    3:  { am:'l', pm:'a' },
-    4:  { am:'a', pm:'a' },
-    5:  { am:'a', pm:'l' }
-};
-
-// ─── COUNT AVAILABLE SLOTS ───
 function countAvailable(data) {
-    return Object.values(data).reduce((n, d) =>
-        n + (d.am !== 'f' ? 1 : 0) + (d.pm !== 'f' ? 1 : 0), 0);
+  return Object.values(data).reduce((n,d)=>n+(d.am!=='f'?1:0)+(d.pm!=='f'?1:0),0);
 }
 
 const MONTH_CONFIG = [
-    { label:'มีนาคม 2569',     monthName:'มีนาคม 2569',     monthNum:'03', year:2026, data: MARCH_DATA, containerId:'marchList' },
-    { label:'เมษายน 2569',     monthName:'เมษายน 2569',     monthNum:'04', year:2026, data: APRIL_DATA, containerId:'aprilList' }
+  {label:'มีนาคม 2569',monthName:'มีนาคม 2569',monthNum:'03',data:MARCH_DATA,containerId:'marchList'}
 ];
 
-// ═══════════════════════════════════════════════════
+let currentMonth=0;
+let selBtn=null,selDay=null,selPeriod=null,selWeekday=null,selMonthName=null,selMonthNum=null;
+let currentMessage='';
 
-let currentMonth = 0;
-let selBtn = null, selDay = null, selPeriod = null, selWeekday = null, selMonthName = null, selMonthNum = null;
-let currentMessage = '';
-
-// ─── WEEKDAY HELPER ───
-const WEEKDAYS_TH = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
-// monthNum = '02' = Feb 2026 (BE 2569), '03' = Mar 2026
-function getWeekday(monthNum, day, year) {
-    const month = parseInt(monthNum) - 1;
-    return WEEKDAYS_TH[new Date(year, month, parseInt(day)).getDay()];
-}
-
-// ─── BUILD CARDS ───
 function buildCards(cfg) {
-    const list = document.getElementById(cfg.containerId);
-    if (list.children.length > 0) return;
-    const S = { a:'available', l:'limited', f:'full' };
-    const L = { a:'ว่าง', l:'เหลือน้อย', f:'เต็ม' };
-    let html = '';
-    Object.keys(cfg.data).sort((a,b)=>+a-+b).forEach(d => {
-        const info = cfg.data[d];
-        const weekday = getWeekday(cfg.monthNum, d, cfg.year);
-        const hasAvail = info.am==='a' || info.pm==='a';
-        const allFull  = info.am==='f' && info.pm==='f';
-        const cardCls  = hasAvail ? 'date-card has-available' : 'date-card';
-        const bdgCls   = hasAvail ? 'avail-badge has-open' : (allFull ? 'avail-badge all-full' : 'avail-badge limited-only');
-        const bdgTxt   = hasAvail ? 'มีรอบว่าง' : (allFull ? 'เต็มทั้งวัน' : 'เหลือน้อย');
-        const slot = (period, s) => s === 'f'
-            ? `<button class="slot-btn full" disabled><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">เต็ม</span></button>`
-            : `<button class="slot-btn ${S[s]}" onclick="selectSlot(this,${d},'${period}','${weekday}','${cfg.monthName}','${cfg.monthNum}')"><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">${L[s]}</span></button>`;
-        html += `<div class="${cardCls}"><div class="date-card-header"><div class="date-info"><div class="date-num">${d}</div><div class="date-detail"><span class="date-weekday">วัน${weekday}</span><span class="date-month-name">${cfg.monthName}</span></div></div><span class="${bdgCls}">${bdgTxt}</span></div><div class="slot-grid">${slot('am',info.am)}${slot('pm',info.pm)}</div></div>`;
-    });
-    list.innerHTML = html;
+  const list=document.getElementById(cfg.containerId);
+  if(list.children.length>0) return;
+  const S={a:'av',l:'lt',f:'fl'};
+  const L={a:'ว่าง',l:'เหลือน้อย',f:'เต็ม'};
+  let html='';
+  Object.keys(cfg.data).sort((a,b)=>+a-+b).forEach(d=>{
+    const info=cfg.data[d];
+    const hasAv=info.am==='a'||info.pm==='a';
+    const allFl=info.am==='f'&&info.pm==='f';
+    const cardCls=hasAv?'date-card has-av':'date-card';
+    const bdgCls=hasAv?'avail-badge open':(allFl?'avail-badge full':'avail-badge lim');
+    const bdgTxt=hasAv?'มีรอบว่าง':(allFl?'เต็มทั้งวัน':'เหลือน้อย');
+    const slot=(period,s)=>s==='f'
+      ?`<button class="slot-btn fl" disabled><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">เต็ม</span></button>`
+      :`<button class="slot-btn ${S[s]}" onclick="selectSlot(this,${d},'${period}','${info.weekday}','${cfg.monthName}','${cfg.monthNum}')"><span class="slot-period">${period==='am'?'รอบเช้า':'รอบบ่าย'}</span><span class="slot-time">${period==='am'?'09:00–12:00':'13:00–17:00'}</span><span class="slot-tag">${L[s]}</span></button>`;
+    html+=`<div class="${cardCls}"><div class="date-card-header"><div class="date-info"><div class="date-num">${d}</div><div class="date-detail"><span class="weekday">วัน${info.weekday}</span><span class="monthname">${cfg.monthName}</span></div></div><span class="${bdgCls}">${bdgTxt}</span></div><div class="slot-grid">${slot('am',info.am)}${slot('pm',info.pm)}</div></div>`;
+  });
+  list.innerHTML=html;
 }
 
-// ─── STEP INDICATOR ───
 function setStep(n) {
-    for (let i=1;i<=3;i++) {
-        const num=document.getElementById('s'+i), lbl=document.getElementById('sl'+i);
-        if (!num) continue;
-        if (i<n)       { num.className='step-num done'; num.textContent='✓'; lbl.className='step-lbl done'; }
-        else if (i===n){ num.className='step-num active'; num.textContent=i; lbl.className='step-lbl active'; }
-        else           { num.className='step-num'; num.textContent=i; lbl.className='step-lbl'; }
-    }
-    for (let i=1;i<=2;i++) {
-        const line=document.getElementById('line'+i);
-        if (line) line.className = i<n ? 'step-line done' : 'step-line';
-    }
+  for(let i=1;i<=3;i++){
+    const num=document.getElementById('s'+i),lbl=document.getElementById('sl'+i);
+    if(!num) continue;
+    if(i<n){num.className='step-num done';num.textContent='✓';lbl.className='step-lbl done';}
+    else if(i===n){num.className='step-num active';num.textContent=i;lbl.className='step-lbl active';}
+    else{num.className='step-num';num.textContent=i;lbl.className='step-lbl';}
+  }
+  for(let i=1;i<=2;i++){
+    const line=document.getElementById('line'+i);
+    if(line) line.className=i<n?'step-line done':'step-line';
+  }
 }
 
 function switchMonth(dir) {
-    const next = currentMonth + dir;
-    const maxMonth = MONTH_CONFIG.length - 1;
-    if (next < 0 || next > maxMonth) return;
-    currentMonth = next;
-    document.querySelectorAll('.month-panel').forEach((p,i) => p.classList.toggle('active', i===currentMonth));
-    document.querySelectorAll('.month-dot').forEach((d,i)   => d.classList.toggle('active', i===currentMonth));
-    const cfg = MONTH_CONFIG[currentMonth];
-    document.getElementById('monthLabel').textContent = cfg.label;
-    document.getElementById('monthMeta').textContent  = countAvailable(cfg.data) + ' รอบว่าง';
-    document.getElementById('prevBtn').classList.toggle('disabled', currentMonth===0);
-    document.getElementById('nextBtn').classList.toggle('disabled', currentMonth===MONTH_CONFIG.length-1);
-    buildCards(cfg);
-    resetSelection();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const next=currentMonth+dir;
+  if(next<0||next>1) return;
+  currentMonth=next;
+  document.querySelectorAll('.month-panel').forEach((p,i)=>p.classList.toggle('active',i===currentMonth));
+  document.querySelectorAll('.month-dot').forEach((d,i)=>d.classList.toggle('active',i===currentMonth));
+  const cfg=MONTH_CONFIG[currentMonth];
+  document.getElementById('monthLabel').textContent=cfg.label;
+  document.getElementById('monthMeta').textContent=countAvailable(cfg.data)+' รอบว่าง';
+  document.getElementById('prevBtn').classList.toggle('disabled',currentMonth===0);
+  document.getElementById('nextBtn').classList.toggle('disabled',currentMonth===1);
+  buildCards(cfg);
+  resetSelection();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ─── SLOT SELECT ───
-function selectSlot(btn, day, period, weekday, monthName, monthNum) {
-    if (selBtn) selBtn.classList.remove('selected');
-    btn.classList.add('selected');
-    selBtn=btn; selDay=day; selPeriod=period; selWeekday=weekday; selMonthName=monthName; selMonthNum=monthNum;
-    const shortMonthMap = {'02':'ก.พ.','03':'มี.ค.','04':'เม.ย.','05':'พ.ค.','06':'มิ.ย.','07':'ก.ค.','08':'ส.ค.','09':'ก.ย.','10':'ต.ค.','11':'พ.ย.','12':'ธ.ค.','01':'ม.ค.'};
-    const shortMonth = shortMonthMap[monthNum] || monthNum;
-    const periodTh   = period==='am' ? 'รอบเช้า 09:00–12:00' : 'รอบบ่าย 13:00–17:00';
-    document.getElementById('stickyText').textContent = day+' '+shortMonth+' · '+periodTh;
-    document.getElementById('stickyText').classList.remove('empty');
-    document.getElementById('stickyCta').disabled = false;
-    setStep(2);
+function selectSlot(btn,day,period,weekday,monthName,monthNum) {
+  if(selBtn) selBtn.classList.remove('selected');
+  btn.classList.add('selected');
+  selBtn=btn;selDay=day;selPeriod=period;selWeekday=weekday;selMonthName=monthName;selMonthNum=monthNum;
+  const sm=monthNum==='02'?'ก.พ.':'มี.ค.';
+  const pt=period==='am'?'รอบเช้า 09:00–12:00':'รอบบ่าย 13:00–17:00';
+  document.getElementById('stickyText').textContent=day+' '+sm+' · '+pt;
+  document.getElementById('stickyText').classList.remove('empty');
+  document.getElementById('stickyCta').disabled=false;
+  setStep(2);
 }
 
 function resetSelection() {
-    if (selBtn) { selBtn.classList.remove('selected'); selBtn=null; }
-    selDay=selPeriod=selWeekday=selMonthName=selMonthNum=null;
-    document.getElementById('stickyText').textContent = 'ยังไม่ได้เลือกรอบ';
-    document.getElementById('stickyText').classList.add('empty');
-    document.getElementById('stickyCta').disabled = true;
+  if(selBtn){selBtn.classList.remove('selected');selBtn=null;}
+  selDay=selPeriod=selWeekday=selMonthName=selMonthNum=null;
+  document.getElementById('stickyText').textContent='ยังไม่ได้เลือกรอบ';
+  document.getElementById('stickyText').classList.add('empty');
+  document.getElementById('stickyCta').disabled=true;
 }
 
-// ─── MODAL ───
 function openModal() {
-    if (!selDay) return;
-    document.getElementById('chipDate').textContent = selDay+' '+selMonthName+' (วัน'+selWeekday+')';
-    document.getElementById('chipTime').textContent = selPeriod==='am' ? 'รอบเช้า: 09:00–12:00 น.' : 'รอบบ่าย: 13:00–17:00 น.';
-    document.getElementById('modal').classList.add('show');
-    document.body.style.overflow = 'hidden';
-    setTimeout(()=>document.getElementById('name').focus(), 300);
+  if(!selDay) return;
+  document.getElementById('chipDate').textContent=selDay+' '+selMonthName+' (วัน'+selWeekday+')';
+  document.getElementById('chipTime').textContent=selPeriod==='am'?'รอบเช้า: 09:00–12:00 น.':'รอบบ่าย: 13:00–17:00 น.';
+  document.getElementById('modal').classList.add('show');
+  document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('name').focus(),300);
 }
 function closeModal() {
-    document.getElementById('modal').classList.remove('show');
-    document.body.style.overflow = '';
+  document.getElementById('modal').classList.remove('show');
+  document.body.style.overflow='';
 }
 
-// ─── PHONE ───
-document.getElementById('phone').addEventListener('input', function() {
-    let v = this.value.replace(/\D/g,'').slice(0,10);
-    if (v.length>6) v=v.slice(0,3)+'-'+v.slice(3,6)+'-'+v.slice(6);
-    else if (v.length>3) v=v.slice(0,3)+'-'+v.slice(3);
-    this.value=v; validatePhone(); checkFormReady();
+document.getElementById('phone').addEventListener('input',function(){
+  let v=this.value.replace(/\D/g,'').slice(0,10);
+  if(v.length>6) v=v.slice(0,3)+'-'+v.slice(3,6)+'-'+v.slice(6);
+  else if(v.length>3) v=v.slice(0,3)+'-'+v.slice(3);
+  this.value=v;validatePhone();checkFormReady();
 });
-function validatePhone() {
-    const raw=document.getElementById('phone').value.replace(/\D/g,'');
-    const ok=/^0[0-9]{8,9}$/.test(raw);
-    const el=document.getElementById('phone'), err=document.getElementById('phoneErr');
-    if (!raw.length) { el.classList.remove('valid','error'); err.classList.remove('show'); }
-    else if (ok)     { el.classList.add('valid'); el.classList.remove('error'); err.classList.remove('show'); }
-    else             { el.classList.add('error'); el.classList.remove('valid'); err.classList.add('show'); }
-    return ok;
+function validatePhone(){
+  const raw=document.getElementById('phone').value.replace(/\D/g,'');
+  const ok=/^0[0-9]{8,9}$/.test(raw);
+  const el=document.getElementById('phone'),err=document.getElementById('phoneErr');
+  if(!raw.length){el.classList.remove('valid','error');err.classList.remove('show');}
+  else if(ok){el.classList.add('valid');el.classList.remove('error');err.classList.remove('show');}
+  else{el.classList.add('error');el.classList.remove('valid');err.classList.add('show');}
+  return ok;
 }
-['name','addr'].forEach(id=>document.getElementById(id).addEventListener('input', checkFormReady));
-function checkFormReady() {
-    const name=document.getElementById('name').value.trim();
-    const phone=document.getElementById('phone').value.replace(/\D/g,'');
-    const addr=document.getElementById('addr').value.trim();
-    document.getElementById('submitBtn').disabled = !(name && /^0[0-9]{8,9}$/.test(phone) && addr);
+['name','addr'].forEach(id=>document.getElementById(id).addEventListener('input',checkFormReady));
+function checkFormReady(){
+  const name=document.getElementById('name').value.trim();
+  const phone=document.getElementById('phone').value.replace(/\D/g,'');
+  const addr=document.getElementById('addr').value.trim();
+  document.getElementById('submitBtn').disabled=!(name&&/^0[0-9]{8,9}$/.test(phone)&&addr);
 }
 
-// ─── SUBMIT ───
 async function submitForm(e) {
-    e.preventDefault();
-    if (!validatePhone()) return;
-    const name=document.getElementById('name').value.trim();
-    const phone=document.getElementById('phone').value.trim();
-    const addr=document.getElementById('addr').value.trim();
-    const note=document.getElementById('note').value.trim();
-    const btn=document.getElementById('submitBtn');
-    btn.disabled=true; btn.textContent='กำลังบันทึก...';
-    const now=new Date();
-    // Ref number: unique via timestamp base36
-    const refNum='KPS-'+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+Date.now().toString(36).slice(-4).toUpperCase();
-    const dateText=selDay+' '+selMonthName+' (วัน'+selWeekday+')';
-    const timeText=selPeriod==='am' ? 'รอบเช้า: 09:00–12:00 น.' : 'รอบบ่าย: 13:00–17:00 น.';
-    const ts=now.toLocaleString('th-TH',{timeZone:'Asia/Bangkok'});
-    let saved = false;
-    try {
-        const res = await fetch(APPS_SCRIPT_URL+'?'+new URLSearchParams({ref:refNum,name,phone,address:addr,note,date:dateText,slot:timeText,ts}).toString(),{method:'GET',redirect:'follow'});
-        saved = res.ok;
-    } catch(e) {}
-    currentMessage='✅ บันทึกข้อมูลเข้ารับสินค้าเรียบร้อยแล้ว\n\n📅 วันที่: '+dateText+'\n⏰ เวลา: '+timeText+'\n👤 ชื่อ: '+name+'\n📞 เบอร์: '+phone+'\n📍 ที่อยู่: '+addr+'\n'+(note?'📝 หมายเหตุ: '+note+'\n':'')+' 🔖 รหัสนัด: '+refNum+'\n\nเจ้าหน้าที่จะติดต่อยืนยัน ภายใน 30 นาที';
-    document.getElementById('refNum').textContent=refNum;
-    document.getElementById('msgBox').textContent=currentMessage;
-    document.getElementById('sumDate').textContent=dateText;
-    document.getElementById('sumTime').textContent=timeText;
-    document.getElementById('sumName').textContent=name;
-    document.getElementById('sumPhone').textContent=phone;
-    document.getElementById('sumAddr').textContent=addr;
-    if (note) { document.getElementById('sumNote').textContent=note; document.getElementById('sumNoteRow').style.display='flex'; }
-    // แสดง warning ถ้า Google Sheets บันทึกไม่สำเร็จ — ไม่หยุด flow
-    const warnEl = document.getElementById('saveWarning');
-    if (warnEl) warnEl.style.display = saved ? 'none' : 'flex';
-    // Fill popup fields
-    document.getElementById('popupRef').textContent   = refNum;
-    document.getElementById('popupDate').textContent  = dateText;
-    document.getElementById('popupTime').textContent  = timeText;
-    document.getElementById('popupName').textContent  = name;
-    document.getElementById('popupPhone').textContent = phone;
-    document.getElementById('popupAddr').textContent  = addr;
-    if (note) {
-        document.getElementById('popupNote').textContent = note;
-        document.getElementById('popupNoteRow').style.display = 'flex';
-    }
-    closeModal();
-    // แสดง popup ก่อน
-    document.getElementById('summaryPopup').classList.add('show');
-    document.body.style.overflow = 'hidden';
-    window.scrollTo(0,0);
+  e.preventDefault();
+  if(!validatePhone()) return;
+  const name=document.getElementById('name').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const addr=document.getElementById('addr').value.trim();
+  const note=document.getElementById('note').value.trim();
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true;btn.textContent='กำลังบันทึก...';
+  const now=new Date();
+  const refNum='KPS-'+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+Date.now().toString(36).slice(-4).toUpperCase();
+  const dateText=selDay+' '+selMonthName+' (วัน'+selWeekday+')';
+  const timeText=selPeriod==='am'?'รอบเช้า: 09:00–12:00 น.':'รอบบ่าย: 13:00–17:00 น.';
+  const ts=now.toLocaleString('th-TH',{timeZone:'Asia/Bangkok'});
+  let saved=false;
+  try{
+    const res=await fetch(APPS_SCRIPT_URL+'?'+new URLSearchParams({ref:refNum,name,phone,address:addr,note,date:dateText,slot:timeText,ts}).toString(),{method:'GET',redirect:'follow'});
+    saved=res.ok;
+  }catch(e){}
+  currentMessage='✅ บันทึกข้อมูลเข้ารับสินค้าเรียบร้อยแล้ว\n\n📅 วันที่: '+dateText+'\n⏰ เวลา: '+timeText+'\n👤 ชื่อ: '+name+'\n📞 เบอร์: '+phone+'\n📍 ที่อยู่: '+addr+'\n'+(note?'📝 หมายเหตุ: '+note+'\n':'')+' 🔖 รหัสนัด: '+refNum+'\n\nเจ้าหน้าที่จะติดต่อยืนยัน ภายใน 30 นาที';
+  document.getElementById('refNum').textContent=refNum;
+  document.getElementById('refTimestamp').textContent='บันทึกเมื่อ: '+ts+' · SESSION: '+SESSION_ID;
+  document.getElementById('sumDate').textContent=dateText;
+  document.getElementById('sumTime').textContent=timeText;
+  document.getElementById('sumName').textContent=name;
+  document.getElementById('sumPhone').textContent=phone;
+  document.getElementById('sumAddr').textContent=addr;
+  if(note){document.getElementById('sumNote').textContent=note;document.getElementById('sumNoteRow').style.display='flex';}
+  const warnEl=document.getElementById('saveWarning');
+  if(warnEl) warnEl.style.display=saved?'none':'flex';
+  document.getElementById('popupRef').textContent=refNum;
+  document.getElementById('popupSealTime').textContent=ts+' · SESSION: '+SESSION_ID;
+  document.getElementById('popupDate').textContent=dateText;
+  document.getElementById('popupTime').textContent=timeText;
+  document.getElementById('popupName').textContent=name;
+  document.getElementById('popupPhone').textContent=phone;
+  document.getElementById('popupAddr').textContent=addr;
+  if(note){document.getElementById('popupNote').textContent=note;document.getElementById('popupNoteRow').style.display='flex';}
+  closeModal();
+  document.getElementById('summaryPopup').classList.add('show');
+  document.body.style.overflow='hidden';
+  window.scrollTo(0,0);
 }
 
-// ─── POPUP ───
-function closePopup() {
-    document.getElementById('summaryPopup').classList.remove('show');
-    document.body.style.overflow = '';
-    // ไปหน้า success หลังปิด popup
-    document.getElementById('pageMain').classList.add('hidden');
-    document.getElementById('stickyBar').style.display='none';
-    document.getElementById('stepBar').style.display='none';
-    document.getElementById('pageSuccess').classList.add('show');
-    window.scrollTo(0,0);
+function closePopup(){
+  document.getElementById('summaryPopup').classList.remove('show');
+  document.body.style.overflow='';
+  document.getElementById('pageMain').classList.add('hidden');
+  document.getElementById('stickyBar').style.display='none';
+  document.getElementById('stepBar').style.display='none';
+  document.getElementById('pageSuccess').classList.add('show');
+  window.scrollTo(0,0);
 }
-function popupCopy() {
-    const btn=document.getElementById('popupCopyBtn'), lbl=document.getElementById('popupCopyText');
-    const done=()=>{ btn.classList.add('copied'); lbl.textContent='✓ คัดลอกแล้ว'; setTimeout(()=>{ btn.classList.remove('copied'); lbl.textContent='📋 คัดลอกข้อความ'; },2500); };
-    if (navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(currentMessage).then(done);
-    else { const ta=document.createElement('textarea'); ta.value=currentMessage; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
+function popupCopy(){
+  const btn=document.getElementById('popupCopyBtn'),lbl=document.getElementById('popupCopyText');
+  const done=()=>{btn.classList.add('copied');lbl.textContent='✓ คัดลอกแล้ว';setTimeout(()=>{btn.classList.remove('copied');lbl.textContent='📋 คัดลอกข้อความ';},2500);};
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(currentMessage).then(done);
+  else{const ta=document.createElement('textarea');ta.value=currentMessage;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
 }
+function sendToLine(){
+  const lineId='@@449icqdu';
+  const encoded=encodeURIComponent(currentMessage);
+  const url='https://line.me/R/oaMessage/'+lineId.replace('@','')+('/?text='+encoded);
+  window.open(url,'_blank');
+}
+function copyMessage(){
+  const btn=document.getElementById('copyBtn'),lbl=document.getElementById('copyText');
+  const done=()=>{btn.classList.add('copied');lbl.textContent='✓ คัดลอกแล้ว';setTimeout(()=>{btn.classList.remove('copied');lbl.textContent='📋 คัดลอกข้อมูล (สำรอง)';},2500);};
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(currentMessage).then(done);
+  else{const ta=document.createElement('textarea');ta.value=currentMessage;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
+}
+function bookNew(){
+  currentMessage='';
+  document.getElementById('pageSuccess').classList.remove('show');
+  document.getElementById('pageMain').classList.remove('hidden');
+  document.getElementById('stickyBar').style.display='';
+  document.getElementById('stepBar').style.display='';
+  resetSelection();setStep(1);
+  document.getElementById('bookingForm').reset();
+  document.getElementById('submitBtn').disabled=true;
+  document.querySelectorAll('.form-input').forEach(el=>el.classList.remove('valid','error'));
+  document.getElementById('phoneErr').classList.remove('show');
+  document.getElementById('sumNoteRow').style.display='none';
+  document.getElementById('popupNoteRow').style.display='none';
+  window.scrollTo(0,0);
+}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal')) closeModal();});
+document.getElementById('summaryPopup').addEventListener('click',e=>{if(e.target===document.getElementById('summaryPopup')) closePopup();});
 
-// ─── COPY ───
-function copyMessage() {
-    const btn=document.getElementById('copyBtn'), lbl=document.getElementById('copyText');
-    const done=()=>{ btn.classList.add('copied'); lbl.textContent='✓ คัดลอกแล้ว'; setTimeout(()=>{ btn.classList.remove('copied'); lbl.textContent='📋 คัดลอกข้อมูลนัดหมาย'; },2500); };
-    if (navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(currentMessage).then(done);
-    else { const ta=document.createElement('textarea'); ta.value=currentMessage; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
-}
-function toggleMsg(btn) {
-    const wrap=document.getElementById('msgBoxWrap'), open=wrap.classList.toggle('open');
-    btn.querySelector('span').textContent=open?'▲ ซ่อนข้อความ':'▼ ดูข้อความที่จะคัดลอก';
-}
-function bookNew() {
-    currentMessage = '';
-    document.getElementById('pageSuccess').classList.remove('show');
-    document.getElementById('pageMain').classList.remove('hidden');
-    document.getElementById('stickyBar').style.display='';
-    document.getElementById('stepBar').style.display='';
-    resetSelection();
-    setStep(1);
-    document.getElementById('bookingForm').reset();
-    document.getElementById('submitBtn').disabled=true;
-    document.querySelectorAll('.form-input').forEach(el=>el.classList.remove('valid','error'));
-    document.getElementById('phoneErr').classList.remove('show');
-    document.getElementById('sumNoteRow').style.display='none';
-    document.getElementById('popupNoteRow').style.display='none';
-    window.scrollTo(0,0);
-}
-document.getElementById('modal').addEventListener('click',e=>{ if(e.target===document.getElementById('modal')) closeModal(); });
-document.getElementById('summaryPopup').addEventListener('click',e=>{ if(e.target===document.getElementById('summaryPopup')) closePopup(); });
-
-// ─── INIT ───
-// Set correct initial month meta
-document.getElementById('monthMeta').textContent = countAvailable(MONTH_CONFIG[0].data) + ' รอบว่าง';
+document.getElementById('monthMeta').textContent=countAvailable(MONTH_CONFIG[0].data)+' รอบว่าง';
 buildCards(MONTH_CONFIG[0]);
 setStep(1);
 </script>
-
 </body>
 </html>
