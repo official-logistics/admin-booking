@@ -231,10 +231,21 @@ body {
   background:var(--bg);
 }
 .date-card.has-av .date-card-header { background:#F5FDF8; border-bottom-color:var(--green-bd); }
-.date-info { display:flex; align-items:center; gap:10px; }
-.date-num { font-size:30px; font-weight:800; color:var(--ink); line-height:1; letter-spacing:-1px; }
-.date-detail .weekday   { font-size:12px; color:var(--muted); font-weight:500; }
-.date-detail .monthname { font-size:13px; font-weight:600; color:var(--ink-2); }
+.date-info { display:flex; align-items:center; gap:14px; }
+.date-num {
+  font-size:48px; font-weight:800; color:var(--ink);
+  line-height:1; letter-spacing:-2px; flex-shrink:0;
+  min-width:52px;
+}
+.date-detail { display:flex; flex-direction:column; gap:1px; }
+.date-detail .weekday {
+  font-size:15px; color:var(--ink); font-weight:700;
+  display:block; line-height:1.3;
+}
+.date-detail .monthname {
+  font-size:14px; color:var(--ink-2); font-weight:500;
+  display:block; line-height:1.3;
+}
 .avail-badge {
   display:inline-flex; align-items:center; gap:4px;
   padding:4px 10px; border-radius:20px;
@@ -811,21 +822,32 @@ document.getElementById('sessionId').textContent = 'SESSION: ' + SESSION_ID;
 
 // ── DATA ──
 const MARCH_DATA = {
-  6:{am:'l',pm:'l',weekday:'พฤหัสบดี'},
-  7:{am:'a',pm:'f',weekday:'ศุกร์'},
-  8:{am:'l',pm:'a',weekday:'เสาร์'},
-  9:{am:'a',pm:'a',weekday:'อาทิตย์'},10:{am:'a',pm:'l',weekday:'จันทร์'},
-  11:{am:'l',pm:'a',weekday:'อังคาร'},12:{am:'a',pm:'a',weekday:'พุธ'},
-  13:{am:'f',pm:'a',weekday:'พฤหัสบดี'},14:{am:'a',pm:'l',weekday:'ศุกร์'},
-  15:{am:'l',pm:'l',weekday:'เสาร์'},16:{am:'a',pm:'a',weekday:'อาทิตย์'},
-  17:{am:'l',pm:'a',weekday:'จันทร์'},18:{am:'a',pm:'l',weekday:'อังคาร'},
-  19:{am:'a',pm:'a',weekday:'พุธ'},20:{am:'l',pm:'f',weekday:'พฤหัสบดี'},
-  21:{am:'a',pm:'a',weekday:'ศุกร์'},22:{am:'l',pm:'l',weekday:'เสาร์'},
-  23:{am:'a',pm:'l',weekday:'อาทิตย์'},24:{am:'a',pm:'a',weekday:'จันทร์'},
-  25:{am:'l',pm:'a',weekday:'อังคาร'},26:{am:'a',pm:'l',weekday:'พุธ'},
-  27:{am:'f',pm:'a',weekday:'พฤหัสบดี'},28:{am:'a',pm:'l',weekday:'ศุกร์'},
-  29:{am:'l',pm:'a',weekday:'เสาร์'},30:{am:'a',pm:'a',weekday:'อาทิตย์'},
-  31:{am:'l',pm:'l',weekday:'จันทร์'}
+  6: {am:'l',pm:'l',weekday:'ศุกร์'},
+  7: {am:'a',pm:'f',weekday:'เสาร์'},
+  8: {am:'l',pm:'a',weekday:'อาทิตย์'},
+  9: {am:'a',pm:'a',weekday:'จันทร์'},
+  10:{am:'a',pm:'l',weekday:'อังคาร'},
+  11:{am:'l',pm:'a',weekday:'พุธ'},
+  12:{am:'a',pm:'a',weekday:'พฤหัสบดี'},
+  13:{am:'f',pm:'a',weekday:'ศุกร์'},
+  14:{am:'a',pm:'l',weekday:'เสาร์'},
+  15:{am:'l',pm:'l',weekday:'อาทิตย์'},
+  16:{am:'a',pm:'a',weekday:'จันทร์'},
+  17:{am:'l',pm:'a',weekday:'อังคาร'},
+  18:{am:'a',pm:'l',weekday:'พุธ'},
+  19:{am:'a',pm:'a',weekday:'พฤหัสบดี'},
+  20:{am:'l',pm:'f',weekday:'ศุกร์'},
+  21:{am:'a',pm:'a',weekday:'เสาร์'},
+  22:{am:'l',pm:'l',weekday:'อาทิตย์'},
+  23:{am:'a',pm:'l',weekday:'จันทร์'},
+  24:{am:'a',pm:'a',weekday:'อังคาร'},
+  25:{am:'l',pm:'a',weekday:'พุธ'},
+  26:{am:'a',pm:'l',weekday:'พฤหัสบดี'},
+  27:{am:'f',pm:'a',weekday:'ศุกร์'},
+  28:{am:'a',pm:'l',weekday:'เสาร์'},
+  29:{am:'l',pm:'a',weekday:'อาทิตย์'},
+  30:{am:'a',pm:'a',weekday:'จันทร์'},
+  31:{am:'l',pm:'l',weekday:'อังคาร'}
 };
 
 function countAvailable(data) {
