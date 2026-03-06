@@ -822,7 +822,6 @@ document.getElementById('sessionId').textContent = 'SESSION: ' + SESSION_ID;
 
 // ── DATA ──
 const MARCH_DATA = {
-  6: {am:'l',pm:'l',weekday:'ศุกร์'},
   7: {am:'a',pm:'f',weekday:'เสาร์'},
   8: {am:'l',pm:'a',weekday:'อาทิตย์'},
   9: {am:'a',pm:'a',weekday:'จันทร์'},
@@ -1029,9 +1028,9 @@ function popupCopy(){
   else{const ta=document.createElement('textarea');ta.value=currentMessage;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
 }
 function sendToLine(){
-  const lineId='@@449icqdu';
+  const lineId='@524lujgj';
   const encoded=encodeURIComponent(currentMessage);
-  const url='https://line.me/R/oaMessage/'+lineId.replace('@','')+('/?text='+encoded);
+  const url='https://line.me/ti/p/~'+lineId+'?text='+encoded;
   window.open(url,'_blank');
 }
 function copyMessage(){
